@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
+import 'layout_design.dart';
 import 'layout_sidebar_right.dart';
 
 class Layout extends StatefulWidget {
@@ -46,7 +47,8 @@ class _LayoutState extends State<Layout> {
           sidebarRightDefaultsVisible: true,
           sidebarLeft: Container(),
           sidebarRight: const LayoutSidebarRight(),
-          central: Container(),
+          sidebarRightWidth: 250,
+          central: LayoutDesign(),
         ));
   }
 }

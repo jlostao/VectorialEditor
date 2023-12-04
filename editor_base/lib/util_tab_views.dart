@@ -10,13 +10,12 @@ class UtilTabViews extends StatefulWidget {
   final bool isAccent;
 
   const UtilTabViews({
-    Key? key,
+    super.key,
     required this.views,
     required this.options,
     this.isAccent = false,
   })  : assert(views.length == options.length,
-            'The number of views and tab texts must be the same.'),
-        super(key: key);
+            'The number of views and tab texts must be the same.');
 
   @override
   UtilTabViewsState createState() => UtilTabViewsState();

@@ -159,8 +159,6 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
     final TwoDimensionalChildBuilderDelegate builderDelegate =
         delegate as TwoDimensionalChildBuilderDelegate;
 
-    // TODO: Optimize to show only visible widgets
-
     final int maxRowIndex = builderDelegate.maxYIndex!;
     final int maxColumnIndex = builderDelegate.maxXIndex!;
 

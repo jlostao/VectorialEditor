@@ -152,10 +152,10 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
 
   @override
   void layoutChildSequence() {
-    //final double horizontalPixels = horizontalOffset.pixels;
-    //final double verticalPixels = verticalOffset.pixels;
-    //final double viewportWidth = viewportDimension.width + cacheExtent;
-    //final double viewportHeight = viewportDimension.height + cacheExtent;
+    final double horizontalPixels = horizontalOffset.pixels - cacheExtent;
+    final double verticalPixels = verticalOffset.pixels - cacheExtent;
+    final double viewportWidth = viewportDimension.width + cacheExtent;
+    final double viewportHeight = viewportDimension.height + cacheExtent;
     final TwoDimensionalChildBuilderDelegate builderDelegate =
         delegate as TwoDimensionalChildBuilderDelegate;
 
@@ -166,19 +166,34 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
 
     double maxX = 0;
     double maxY = 0;
+    double limitX = (horizontalPixels + viewportWidth);
+    double limitY = (verticalPixels + viewportHeight);
     for (int column = 0; column <= maxColumnIndex; column++) {
       for (int row = 0; row <= maxRowIndex; row++) {
-        final ChildVicinity vicinity =
-            ChildVicinity(xIndex: column, yIndex: row);
-        final RenderBox child = buildOrObtainChildFor(vicinity)!;
-        child.layout(constraints.loosen());
+        // Run code inside if only if widget is visible
+        bool widgetIsVisible = false;
+        Offset widgetPosition = list[row]["position"];
+        Size widgetSize = list[row]["size"];
+        
+        widgetIsVisible = 
+            (widgetPosition.dx + widgetSize.width) >= horizontalPixels 
+          && (widgetPosition.dy + widgetSize.height) >= verticalPixels 
+          && widgetPosition.dx <= limitX
+          && widgetPosition.dy <= limitY;
 
-        // Set widgets at scroll position
-        Offset position = Offset(list[row]["position"].dx - horizontalOffset.pixels, list[row]["position"].dy - verticalOffset.pixels);
-        parentDataOf(child).layoutOffset = position;
+        if (widgetIsVisible) {
+          final ChildVicinity vicinity =
+              ChildVicinity(xIndex: column, yIndex: row);
+          final RenderBox child = buildOrObtainChildFor(vicinity)!;
+          child.layout(constraints.loosen());
 
-        double tmpX = list[row]["position"].dx + list[row]["size"].width;
-        double tmpY = list[row]["position"].dy + list[row]["size"].height;
+          // Set widgets at scroll position
+          Offset drawingPosition = Offset(widgetPosition.dx - horizontalOffset.pixels, widgetPosition.dy - verticalOffset.pixels);
+          parentDataOf(child).layoutOffset = drawingPosition;
+        }
+
+        double tmpX = widgetPosition.dx + widgetSize.width;
+        double tmpY = widgetPosition.dy + widgetSize.height;
         if (maxX < tmpX) maxX = tmpX;
         if (maxY < tmpY) maxY = tmpY;
       }
@@ -197,7 +212,6 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
       clampDouble(
           verticalExtent - viewportDimension.height, 0.0, double.infinity),
     );
-
     // Super class handles garbage collection too!
   }
   //per class handles garbage collection too!

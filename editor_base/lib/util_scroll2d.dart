@@ -5,13 +5,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 
 class UtilScroll2d extends StatefulWidget {
-  final Map<Offset, Widget> widgetsList;
+  final Map<ChildVicinity, List<dynamic>> list;
   final Size
       cellSize; // Widgets overlapping cell size will dissapear when scroll is out of view
 
   const UtilScroll2d({
     super.key,
-    required this.widgetsList,
+    required this.list,
     this.cellSize = const Size(1500, 1500),
   });
 
@@ -25,42 +25,7 @@ class UtilScroll2dState extends State<UtilScroll2d> {
   final Map<Offset, Size> _widgetSizes = {};
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _calculateWidgetSizes());
-  }
-
-  @override
-  void didUpdateWidget(UtilScroll2d oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.widgetsList != widget.widgetsList) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => _calculateWidgetSizes());
-    }
-  }
-
-  void _calculateWidgetSizes() {
-    _widgetSizes.clear();
-    widget.widgetsList.forEach((offset, widget) {
-      final key = widget.key as GlobalKey?;
-      final renderBox = key?.currentContext?.findRenderObject() as RenderBox?;
-      final size = renderBox?.size ?? Size.zero;
-      _widgetSizes[offset] = size;
-    });
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // Calculem els valors màxims per a x i y a partir de les posicions dels widgets
-    int maxX = widget.widgetsList.keys
-        .map((offset) => (offset.dx / widget.cellSize.width).ceil())
-        .reduce(math.max);
-    int maxY = widget.widgetsList.keys
-        .map((offset) => (offset.dy / widget.cellSize.height).ceil())
-        .reduce(math.max);
-
     return CupertinoScrollbar(
       controller: _scrollControllerV,
       child: CupertinoScrollbar(
@@ -75,25 +40,10 @@ class UtilScroll2dState extends State<UtilScroll2d> {
           ),
           diagonalDragBehavior: DiagonalDragBehavior.free,
           delegate: TwoDimensionalChildBuilderDelegate(
-            maxXIndex: maxX - 1, // Ajustem segons els valors calculats
-            maxYIndex: maxY - 1,
+            maxXIndex: 0,
+            maxYIndex: widget.list.length - 1,
             builder: (BuildContext context, ChildVicinity vicinity) {
-              return Stack(clipBehavior: Clip.none, children: [
-                ...widget.widgetsList.entries.map((entry) {
-                  return Positioned(
-                    left: entry.key.dx,
-                    top: entry.key.dy,
-                    child: entry.value,
-                  );
-                }),
-                Container(
-                  width: widget.cellSize.width,
-                  height: widget.cellSize.height,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: CupertinoColors.systemGrey),
-                  ),
-                ),
-              ]);
+              return widget.list[vicinity]![1];
             },
           ),
         ),
@@ -212,6 +162,15 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
     final TwoDimensionalChildBuilderDelegate builderDelegate =
         delegate as TwoDimensionalChildBuilderDelegate;
 
+    for (int x = 0; x <= builderDelegate.maxXIndex!; x++) {
+      for (int y = 0; y <= builderDelegate.maxYIndex!; y++) {
+        final ChildVicinity vicinity = ChildVicinity(xIndex: x, yIndex: y);
+        final RenderBox child = buildOrObtainChildFor(vicinity)!;
+        child.layout(constraints.loosen());
+      }
+    }
+
+/*
     final int maxRowIndex = builderDelegate.maxYIndex!;
     final int maxColumnIndex = builderDelegate.maxXIndex!;
 
@@ -261,6 +220,7 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
       clampDouble(
           verticalExtent - viewportDimension.height, 0.0, double.infinity),
     );
+    */
     // Super class handles garbage collection too!
   }
   //per class handles garbage collection too!

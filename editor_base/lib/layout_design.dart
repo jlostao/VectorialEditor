@@ -12,19 +12,40 @@ class LayoutDesign extends StatefulWidget {
 class LayoutDesignState extends State<LayoutDesign> {
   @override
   Widget build(BuildContext context) {
-    Map<Offset, Widget> list = {
-      const Offset(0, 0): const Text('Widget 0 hola què tal'),
-      const Offset(100, 100): const Text('Widget 1'),
-      const Offset(200, 200): const Text('Widget 2'),
-      const Offset(500, 500): const Text('Widget 2b'),
-      const Offset(600, 600): const Text('Widget 2c'),
-      const Offset(800, 800): const Text('Widget 3'),
-      const Offset(900, 900): const Text('Widget 3b'),
+    Map<ChildVicinity, List<dynamic>> list = {
+      const ChildVicinity(xIndex: 0, yIndex: 0): [
+        const Offset(0, 0),
+        const Text('Widget 0 hola què tal')
+      ],
+      const ChildVicinity(xIndex: 0, yIndex: 1): [
+        const Offset(100, 100),
+        const Text('Widget 1')
+      ],
+      const ChildVicinity(xIndex: 0, yIndex: 2): [
+        const Offset(200, 200),
+        const Text('Widget 2')
+      ],
+      const ChildVicinity(xIndex: 0, yIndex: 3): [
+        const Offset(500, 500),
+        const Text('Widget 2b')
+      ],
+      const ChildVicinity(xIndex: 0, yIndex: 4): [
+        const Offset(600, 600),
+        const Text('Widget 2c')
+      ],
+      const ChildVicinity(xIndex: 0, yIndex: 5): [
+        const Offset(800, 800),
+        const Text('Widget 3')
+      ],
+      const ChildVicinity(xIndex: 0, yIndex: 6): [
+        const Offset(900, 900),
+        const Text('Widget 3b')
+      ],
       // Afegir més widgets segons sigui necessari
     };
 
     return UtilScroll2d(
-      widgetsList: list,
+      list: list,
     );
   }
 }

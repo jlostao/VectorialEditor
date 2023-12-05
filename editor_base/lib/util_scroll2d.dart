@@ -5,7 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 
 class UtilScroll2d extends StatefulWidget {
-  final Map<ChildVicinity, List<dynamic>> list;
+  final Map<int, List<dynamic>> list;
   final Size
       cellSize; // Widgets overlapping cell size will dissapear when scroll is out of view
 
@@ -43,7 +43,7 @@ class UtilScroll2dState extends State<UtilScroll2d> {
             maxXIndex: 0,
             maxYIndex: widget.list.length - 1,
             builder: (BuildContext context, ChildVicinity vicinity) {
-              return widget.list[vicinity]![1];
+              return widget.list[vicinity.yIndex]![1];
             },
           ),
         ),
@@ -53,7 +53,7 @@ class UtilScroll2dState extends State<UtilScroll2d> {
 }
 
 class TwoDimensionalGridView extends TwoDimensionalScrollView {
-  final Map<ChildVicinity, List<dynamic>> list;
+  final Map<int, List<dynamic>> list;
 
   const TwoDimensionalGridView({
     super.key,
@@ -91,7 +91,7 @@ class TwoDimensionalGridView extends TwoDimensionalScrollView {
 }
 
 class TwoDimensionalGridViewport extends TwoDimensionalViewport {
-  final Map<ChildVicinity, List<dynamic>> list;
+  final Map<int, List<dynamic>> list;
 
   const TwoDimensionalGridViewport({
     super.key,
@@ -140,7 +140,7 @@ class TwoDimensionalGridViewport extends TwoDimensionalViewport {
 }
 
 class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
-  Map<ChildVicinity, List<dynamic>> list;
+  Map<int, List<dynamic>> list;
 
   RenderTwoDimensionalGridViewport({
     required super.horizontalOffset,
@@ -164,15 +164,11 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
     final TwoDimensionalChildBuilderDelegate builderDelegate =
         delegate as TwoDimensionalChildBuilderDelegate;
 
-    for (int cnt = 0; cnt < list.keys.length; cnt++) {
-      final ChildVicinity vicinity = list.keys.elementAt(cnt);
-      final RenderBox child = buildOrObtainChildFor(vicinity)!;
-      child.layout(constraints.loosen());
-    }
-
-    Size cellSize = Size(200, 200);
     final int maxRowIndex = builderDelegate.maxYIndex!;
     final int maxColumnIndex = builderDelegate.maxXIndex!;
+
+
+    Size cellSize = Size(200, 200);
 
     final int leadingColumn =
         math.max((horizontalPixels / cellSize.width).floor(), 0);
@@ -201,7 +197,8 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
 
         // Subclasses only need to set the normalized layout offset. The super
         // class adjusts for reversed axes.
-        parentDataOf(child).layoutOffset = Offset(xLayoutOffset, yLayoutOffset);
+        // parentDataOf(child).layoutOffset = Offset(xLayoutOffset, yLayoutOffset);
+        parentDataOf(child).layoutOffset = list[row]![0];
         yLayoutOffset += cellSize.height;
       }
       xLayoutOffset += cellSize.width;

@@ -129,9 +129,9 @@ class TwoDimensionalGridView extends TwoDimensionalScrollView {
       delegate: delegate as TwoDimensionalChildBuilderDelegate,
       cacheExtent: cacheExtent,
       clipBehavior: clipBehavior,
-      children: children,
       positions: positions,
       sizes: sizes,
+      children: children,
     );
   }
 }

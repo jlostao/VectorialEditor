@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_cupertino_desktop_kit/cdk.dart';
 import 'util_scroll2d.dart';
 
 class LayoutDesign extends StatefulWidget {
-  const LayoutDesign({super.key});
+  final double zoom;
+  const LayoutDesign({ super.key, this.zoom = 100 });
 
   @override
   LayoutDesignState createState() => LayoutDesignState();
 }
 
 class LayoutDesignState extends State<LayoutDesign> {
-  //bool _hasSizes = false;
   List<Offset> positions = [
       const Offset(0, 0),
       const Offset(100, 100),
@@ -21,7 +22,7 @@ class LayoutDesignState extends State<LayoutDesign> {
   ];
 
   List<Widget> widgets = [
-      Text(key: GlobalKey(), 'Widget 0 hola què tal'),
+      Text(key: GlobalKey(), 'Widget'),
       Text(key: GlobalKey(), 'Widget 1'),
       Text(key: GlobalKey(), 'Widget 2'),
       Text(key: GlobalKey(), 'Widget 2b 500'),
@@ -37,9 +38,10 @@ class LayoutDesignState extends State<LayoutDesign> {
 
   @override
   Widget build(BuildContext context) {
-    return UtilScroll2d(
+    CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
+    return Container(color: theme.background, child: UtilScroll2d(
       positions: positions,
       children: widgets,
-    );
+    ));
   }
 }

@@ -12,6 +12,8 @@ class Layout extends StatefulWidget {
 
 class _LayoutState extends State<Layout> {
   GlobalKey<CDKAppSidebarsState> keyAppStructure = GlobalKey();
+  double _zoomSlider = 0.5;
+  double _zoomValue = 100;
 
   void toggleRightSidebar() {
     final CDKAppSidebarsState? state = keyAppStructure.currentState;
@@ -29,9 +31,23 @@ class _LayoutState extends State<Layout> {
           backgroundColor: theme.backgroundSecondary0,
           middle: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text("hola"),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  SizedBox(width: 75, child: CDKPickerSlider(value: _zoomSlider, onChanged: (value) {
+                    _zoomSlider = value;
+                    if (value < 0.5) {
+                      _zoomValue = value * 100 + 50;
+                    } else {
+                      double normalizedValue = (value - 0.51) / (1 - 0.51);
+                      _zoomValue = normalizedValue * 400 + 100;
+                    }
+                    setState(() {});
+                  })), 
+                  const SizedBox(width: 8),
+                  Text(_zoomValue.toStringAsFixed(0), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400)),
+                ]),
                 CDKButtonIcon(
                   icon: CupertinoIcons.sidebar_right,
                   onPressed: () {
@@ -48,7 +64,7 @@ class _LayoutState extends State<Layout> {
           sidebarLeft: Container(),
           sidebarRight: const LayoutSidebarRight(),
           sidebarRightWidth: 250,
-          central: LayoutDesign(),
+          central: LayoutDesign(zoom: _zoomValue),
         ));
   }
 }

@@ -22,6 +22,7 @@ class LayoutButtonsState extends State<LayoutSidebarRight> {
           physics: const NeverScrollableScrollPhysics(),
           children: <Widget>[
             Container(
+              padding: const EdgeInsets.only(top:1.0),
               height: screenHeight - 45,
               color: backgroundColor,
               child: UtilTabViews(isAccent: true, options: const [

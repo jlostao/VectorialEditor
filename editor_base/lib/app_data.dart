@@ -9,7 +9,6 @@ class AppData with ChangeNotifier {
   // AppData appData = Provider.of<AppData>(context, listen: false)
 
   bool readyExample = false;
-
   late dynamic dataExample;
 
   // Tell if data is ready

@@ -1,18 +1,14 @@
-import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 
 class UtilScroll2d extends StatefulWidget {
-  final Map<int, List<dynamic>> list;
-  final Size
-      cellSize; // Widgets overlapping cell size will dissapear when scroll is out of view
+  final List<List<dynamic>> list;
 
   const UtilScroll2d({
     super.key,
     required this.list,
-    this.cellSize = const Size(1500, 1500),
   });
 
   @override
@@ -22,7 +18,6 @@ class UtilScroll2d extends StatefulWidget {
 class UtilScroll2dState extends State<UtilScroll2d> {
   final ScrollController _scrollControllerH = ScrollController();
   final ScrollController _scrollControllerV = ScrollController();
-  final Map<Offset, Size> _widgetSizes = {};
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +38,7 @@ class UtilScroll2dState extends State<UtilScroll2d> {
             maxXIndex: 0,
             maxYIndex: widget.list.length - 1,
             builder: (BuildContext context, ChildVicinity vicinity) {
-              return widget.list[vicinity.yIndex]![1];
+              return widget.list[vicinity.yIndex][2];
             },
           ),
         ),
@@ -53,7 +48,7 @@ class UtilScroll2dState extends State<UtilScroll2d> {
 }
 
 class TwoDimensionalGridView extends TwoDimensionalScrollView {
-  final Map<int, List<dynamic>> list;
+  final List<List<dynamic>> list;
 
   const TwoDimensionalGridView({
     super.key,
@@ -91,7 +86,7 @@ class TwoDimensionalGridView extends TwoDimensionalScrollView {
 }
 
 class TwoDimensionalGridViewport extends TwoDimensionalViewport {
-  final Map<int, List<dynamic>> list;
+  final List<List<dynamic>> list;
 
   const TwoDimensionalGridViewport({
     super.key,
@@ -140,7 +135,7 @@ class TwoDimensionalGridViewport extends TwoDimensionalViewport {
 }
 
 class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
-  Map<int, List<dynamic>> list;
+  List<List<dynamic>> list;
 
   RenderTwoDimensionalGridViewport({
     required super.horizontalOffset,
@@ -157,61 +152,46 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
 
   @override
   void layoutChildSequence() {
-    final double horizontalPixels = horizontalOffset.pixels;
-    final double verticalPixels = verticalOffset.pixels;
-    final double viewportWidth = viewportDimension.width + cacheExtent;
-    final double viewportHeight = viewportDimension.height + cacheExtent;
+    //final double horizontalPixels = horizontalOffset.pixels;
+    //final double verticalPixels = verticalOffset.pixels;
+    //final double viewportWidth = viewportDimension.width + cacheExtent;
+    //final double viewportHeight = viewportDimension.height + cacheExtent;
     final TwoDimensionalChildBuilderDelegate builderDelegate =
         delegate as TwoDimensionalChildBuilderDelegate;
+
+    // TODO: Optimize to show only visible widgets
 
     final int maxRowIndex = builderDelegate.maxYIndex!;
     final int maxColumnIndex = builderDelegate.maxXIndex!;
 
-
-    Size cellSize = Size(200, 200);
-
-    final int leadingColumn =
-        math.max((horizontalPixels / cellSize.width).floor(), 0);
-    final int leadingRow =
-        math.max((verticalPixels / cellSize.height).floor(), 0);
-
-    final int trailingColumn = math.min(
-      ((horizontalPixels + viewportWidth) / cellSize.width).ceil(),
-      maxColumnIndex,
-    );
-    final int trailingRow = math.min(
-      ((verticalPixels + viewportHeight) / cellSize.height).ceil(),
-      maxRowIndex,
-    );
-
-    double xLayoutOffset =
-        (leadingColumn * cellSize.width) - horizontalOffset.pixels;
-    double yLayoutOffset = 0;
-    for (int column = leadingColumn; column <= trailingColumn; column++) {
-      yLayoutOffset = (leadingRow * cellSize.height) - verticalOffset.pixels;
-      for (int row = leadingRow; row <= trailingRow; row++) {
+    double maxX = 0;
+    double maxY = 0;
+    for (int column = 0; column <= maxColumnIndex; column++) {
+      for (int row = 0; row <= maxRowIndex; row++) {
         final ChildVicinity vicinity =
             ChildVicinity(xIndex: column, yIndex: row);
         final RenderBox child = buildOrObtainChildFor(vicinity)!;
         child.layout(constraints.loosen());
 
-        // Subclasses only need to set the normalized layout offset. The super
-        // class adjusts for reversed axes.
-        // parentDataOf(child).layoutOffset = Offset(xLayoutOffset, yLayoutOffset);
-        parentDataOf(child).layoutOffset = list[row]![0];
-        yLayoutOffset += cellSize.height;
+        // Set widgets at scroll position
+        Offset position = Offset(list[row][0].dx - horizontalOffset.pixels, list[row][0].dy - verticalOffset.pixels);
+        parentDataOf(child).layoutOffset = position;
+
+        double tmpX = list[row][0].dx + list[row][1].width;
+        double tmpY = list[row][0].dy + list[row][1].height;
+        if (maxX < tmpX) maxX = tmpX;
+        if (maxY < tmpY) maxY = tmpY;
       }
-      xLayoutOffset += cellSize.width;
     }
 
     // Set the min and max scroll extents for each axis.
-    final double horizontalExtent = cellSize.width * (maxColumnIndex + 1);
+    final double horizontalExtent = maxX;
     horizontalOffset.applyContentDimensions(
       0,
       clampDouble(
           horizontalExtent - viewportDimension.width, 0.0, double.infinity),
     );
-    final double verticalExtent = cellSize.height * (maxRowIndex + 1);
+    final double verticalExtent = maxY;
     verticalOffset.applyContentDimensions(
       0,
       clampDouble(

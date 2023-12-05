@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 
 class UtilScroll2d extends StatefulWidget {
-  final List<List<dynamic>> list;
+  final List<Map> list;
 
   const UtilScroll2d({
     super.key,
@@ -38,7 +38,7 @@ class UtilScroll2dState extends State<UtilScroll2d> {
             maxXIndex: 0,
             maxYIndex: widget.list.length - 1,
             builder: (BuildContext context, ChildVicinity vicinity) {
-              return widget.list[vicinity.yIndex][2];
+              return widget.list[vicinity.yIndex]["widget"];
             },
           ),
         ),
@@ -48,7 +48,7 @@ class UtilScroll2dState extends State<UtilScroll2d> {
 }
 
 class TwoDimensionalGridView extends TwoDimensionalScrollView {
-  final List<List<dynamic>> list;
+  final List<Map> list;
 
   const TwoDimensionalGridView({
     super.key,
@@ -86,7 +86,7 @@ class TwoDimensionalGridView extends TwoDimensionalScrollView {
 }
 
 class TwoDimensionalGridViewport extends TwoDimensionalViewport {
-  final List<List<dynamic>> list;
+  final List<Map> list;
 
   const TwoDimensionalGridViewport({
     super.key,
@@ -135,7 +135,7 @@ class TwoDimensionalGridViewport extends TwoDimensionalViewport {
 }
 
 class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
-  List<List<dynamic>> list;
+  List<Map> list;
 
   RenderTwoDimensionalGridViewport({
     required super.horizontalOffset,
@@ -174,11 +174,11 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
         child.layout(constraints.loosen());
 
         // Set widgets at scroll position
-        Offset position = Offset(list[row][0].dx - horizontalOffset.pixels, list[row][0].dy - verticalOffset.pixels);
+        Offset position = Offset(list[row]["position"].dx - horizontalOffset.pixels, list[row]["position"].dy - verticalOffset.pixels);
         parentDataOf(child).layoutOffset = position;
 
-        double tmpX = list[row][0].dx + list[row][1].width;
-        double tmpY = list[row][0].dy + list[row][1].height;
+        double tmpX = list[row]["position"].dx + list[row]["size"].width;
+        double tmpY = list[row]["position"].dy + list[row]["size"].height;
         if (maxX < tmpX) maxX = tmpX;
         if (maxY < tmpY) maxY = tmpY;
       }

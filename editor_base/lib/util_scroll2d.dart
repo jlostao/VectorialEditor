@@ -4,11 +4,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 
 class UtilScroll2d extends StatefulWidget {
-  final List<Map> list;
+  final List<Widget> children;
+  final List<Offset> positions;
 
   const UtilScroll2d({
     super.key,
-    required this.list,
+    required this.children,
+    required this.positions
   });
 
   @override
@@ -19,14 +21,56 @@ class UtilScroll2dState extends State<UtilScroll2d> {
   final ScrollController _scrollControllerH = ScrollController();
   final ScrollController _scrollControllerV = ScrollController();
 
+  bool _sizesAreReady = false;
+  final List<Size> _sizes = [];
+
+  @override
+  void didUpdateWidget(UtilScroll2d oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.children != oldWidget.children || widget.positions != oldWidget.positions) {
+      _sizesAreReady = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _calculateSizes());
+    }
+  }
+
+  void _calculateSizes() {
+    _sizes.clear();
+    for (int cnt = 0; cnt < widget.children.length; cnt = cnt + 1) {
+      Widget item = widget.children[cnt];
+      GlobalKey key = item.key as GlobalKey;
+      final RenderBox renderBox = key.currentContext!.findRenderObject() as RenderBox;
+      final size = renderBox.size;
+      _sizes.add(size);
+    }
+    _sizesAreReady = true;
+    setState(() { });
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    if (!_sizesAreReady) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _calculateSizes());
+
+      // First frame set sizes
+      return Offstage(child: Stack(children: 
+            widget.children.map((item) {
+            return Positioned(
+              left: 0,
+              top: 0,
+              child: item,
+            );
+          }).toList()
+      ));
+    }
+
     return CupertinoScrollbar(
       controller: _scrollControllerV,
       child: CupertinoScrollbar(
         controller: _scrollControllerH,
         child: TwoDimensionalGridView(
-          list: widget.list,
+          positions: widget.positions,
+          sizes: _sizes,
           verticalDetails: ScrollableDetails.vertical(
             controller: _scrollControllerV,
           ),
@@ -36,11 +80,12 @@ class UtilScroll2dState extends State<UtilScroll2d> {
           diagonalDragBehavior: DiagonalDragBehavior.free,
           delegate: TwoDimensionalChildBuilderDelegate(
             maxXIndex: 0,
-            maxYIndex: widget.list.length - 1,
+            maxYIndex: widget.children.length - 1,
             builder: (BuildContext context, ChildVicinity vicinity) {
-              return widget.list[vicinity.yIndex]["widget"];
+              return widget.children[vicinity.yIndex];
             },
           ),
+          children: widget.children,
         ),
       ),
     );
@@ -48,7 +93,9 @@ class UtilScroll2dState extends State<UtilScroll2d> {
 }
 
 class TwoDimensionalGridView extends TwoDimensionalScrollView {
-  final List<Map> list;
+  final List<Widget> children;
+  final List<Offset> positions;
+  final List<Size> sizes;
 
   const TwoDimensionalGridView({
     super.key,
@@ -62,7 +109,9 @@ class TwoDimensionalGridView extends TwoDimensionalScrollView {
     super.dragStartBehavior = DragStartBehavior.start,
     super.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     super.clipBehavior = Clip.hardEdge,
-    required this.list,
+    required this.children,
+    required this.positions,
+    required this.sizes,
   }) : super(delegate: delegate);
 
   @override
@@ -80,13 +129,17 @@ class TwoDimensionalGridView extends TwoDimensionalScrollView {
       delegate: delegate as TwoDimensionalChildBuilderDelegate,
       cacheExtent: cacheExtent,
       clipBehavior: clipBehavior,
-      list: list,
+      children: children,
+      positions: positions,
+      sizes: sizes,
     );
   }
 }
 
 class TwoDimensionalGridViewport extends TwoDimensionalViewport {
-  final List<Map> list;
+  final List<Widget> children;
+  final List<Offset> positions;
+  final List<Size> sizes;
 
   const TwoDimensionalGridViewport({
     super.key,
@@ -96,7 +149,9 @@ class TwoDimensionalGridViewport extends TwoDimensionalViewport {
     required super.horizontalAxisDirection,
     required TwoDimensionalChildBuilderDelegate super.delegate,
     required super.mainAxis,
-    required this.list,
+    required this.children,
+    required this.positions,
+    required this.sizes,
     super.cacheExtent,
     super.clipBehavior = Clip.hardEdge,
   });
@@ -113,7 +168,9 @@ class TwoDimensionalGridViewport extends TwoDimensionalViewport {
       childManager: context as TwoDimensionalChildManager,
       cacheExtent: cacheExtent,
       clipBehavior: clipBehavior,
-      list: list,
+      children: children,
+      positions: positions,
+      sizes: sizes
     );
   }
 
@@ -135,7 +192,9 @@ class TwoDimensionalGridViewport extends TwoDimensionalViewport {
 }
 
 class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
-  List<Map> list;
+  List<Widget> children;
+  List<Offset> positions;
+  List<Size> sizes;
 
   RenderTwoDimensionalGridViewport({
     required super.horizontalOffset,
@@ -145,7 +204,9 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
     required TwoDimensionalChildBuilderDelegate delegate,
     required super.mainAxis,
     required super.childManager,
-    required this.list,
+    required this.children,
+    required this.positions,
+    required this.sizes,
     super.cacheExtent,
     super.clipBehavior = Clip.hardEdge,
   }) : super(delegate: delegate);
@@ -170,8 +231,8 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
       for (int row = 0; row <= maxRowIndex; row++) {
         // Run code inside if only if widget is visible
         bool widgetIsVisible = false;
-        Offset widgetPosition = list[row]["position"];
-        Size widgetSize = list[row]["size"];
+        Offset widgetPosition = positions[row];
+        Size widgetSize = sizes[row];
         
         widgetIsVisible = 
             (widgetPosition.dx + widgetSize.width) >= horizontalPixels 

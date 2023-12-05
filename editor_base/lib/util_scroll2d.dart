@@ -164,10 +164,10 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
     final TwoDimensionalChildBuilderDelegate builderDelegate =
         delegate as TwoDimensionalChildBuilderDelegate;
 
-    for (int cnt = 0; cnt < list.length; cnt++) {
+    for (int cnt = 0; cnt < list.keys.length; cnt++) {
       final ChildVicinity vicinity = list.keys.elementAt(cnt);
       final RenderBox child = buildOrObtainChildFor(vicinity)!;
-      //child.layout(constraints.loosen());
+      child.layout(constraints.loosen());
     }
 
     Size cellSize = Size(200, 200);

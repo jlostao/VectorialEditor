@@ -1,68 +1,30 @@
+import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
-
+import 'util_scroll2d.dart';
 
 class LayoutDesign extends StatefulWidget {
+  const LayoutDesign({super.key});
+
   @override
-  _LayoutDesignState createState() => _LayoutDesignState();
+  LayoutDesignState createState() => LayoutDesignState();
 }
 
-class _LayoutDesignState extends State<LayoutDesign> {
-  double _zoom = 1.0;
-
-  void _incrementZoom() {
-    setState(() {
-      _zoom += 0.1;
-    });
-  }
-
-  void _decrementZoom() {
-    if (_zoom > 0.1) {
-      setState(() {
-        _zoom -= 0.1;
-      });
-    }
-  }
-
+class LayoutDesignState extends State<LayoutDesign> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-        children: <Widget>[
-          CustomPaint(
-            painter: RulePainter(),
-            size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height),
-          ),
-          TwoDimensionalScrollViewX()
+    Map<Offset, Widget> list = {
+      const Offset(0, 0): const Text('Widget 0 hola què tal'),
+      const Offset(100, 100): const Text('Widget 1'),
+      const Offset(200, 200): const Text('Widget 2'),
+      const Offset(500, 500): const Text('Widget 2b'),
+      const Offset(600, 600): const Text('Widget 2c'),
+      const Offset(800, 800): const Text('Widget 3'),
+      const Offset(900, 900): const Text('Widget 3b'),
+      // Afegir més widgets segons sigui necessari
+    };
 
-
-        ],
-     
-    );
-  }
-}
-
-class TwoDimensionalScrollViewX extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverToBoxAdapter(
-          child: SizedBox(
-            height: 2000, // Alçada de la primera secció
-            child: CustomScrollView(
-              scrollDirection: Axis.horizontal,
-              slivers: <Widget>[
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    width: 2000, // Amplada de la segona secció
-                    height: 2000,
-                    child: Text("hola"),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+    return UtilScroll2d(
+      widgetsList: list,
     );
   }
 }

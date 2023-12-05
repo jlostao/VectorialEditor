@@ -31,7 +31,7 @@ class UtilScroll2dState extends State<UtilScroll2d> {
       child: CupertinoScrollbar(
         controller: _scrollControllerH,
         child: TwoDimensionalGridView(
-          cellSize: widget.cellSize,
+          list: widget.list,
           verticalDetails: ScrollableDetails.vertical(
             controller: _scrollControllerV,
           ),
@@ -53,7 +53,8 @@ class UtilScroll2dState extends State<UtilScroll2d> {
 }
 
 class TwoDimensionalGridView extends TwoDimensionalScrollView {
-  final Size cellSize;
+  final Map<ChildVicinity, List<dynamic>> list;
+
   const TwoDimensionalGridView({
     super.key,
     super.primary,
@@ -66,7 +67,7 @@ class TwoDimensionalGridView extends TwoDimensionalScrollView {
     super.dragStartBehavior = DragStartBehavior.start,
     super.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     super.clipBehavior = Clip.hardEdge,
-    required this.cellSize,
+    required this.list,
   }) : super(delegate: delegate);
 
   @override
@@ -84,13 +85,14 @@ class TwoDimensionalGridView extends TwoDimensionalScrollView {
       delegate: delegate as TwoDimensionalChildBuilderDelegate,
       cacheExtent: cacheExtent,
       clipBehavior: clipBehavior,
-      cellSize: cellSize,
+      list: list,
     );
   }
 }
 
 class TwoDimensionalGridViewport extends TwoDimensionalViewport {
-  final Size cellSize;
+  final Map<ChildVicinity, List<dynamic>> list;
+
   const TwoDimensionalGridViewport({
     super.key,
     required super.verticalOffset,
@@ -99,7 +101,7 @@ class TwoDimensionalGridViewport extends TwoDimensionalViewport {
     required super.horizontalAxisDirection,
     required TwoDimensionalChildBuilderDelegate super.delegate,
     required super.mainAxis,
-    required this.cellSize,
+    required this.list,
     super.cacheExtent,
     super.clipBehavior = Clip.hardEdge,
   });
@@ -116,7 +118,7 @@ class TwoDimensionalGridViewport extends TwoDimensionalViewport {
       childManager: context as TwoDimensionalChildManager,
       cacheExtent: cacheExtent,
       clipBehavior: clipBehavior,
-      cellSize: cellSize,
+      list: list,
     );
   }
 
@@ -138,7 +140,7 @@ class TwoDimensionalGridViewport extends TwoDimensionalViewport {
 }
 
 class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
-  final Size cellSize;
+  Map<ChildVicinity, List<dynamic>> list;
 
   RenderTwoDimensionalGridViewport({
     required super.horizontalOffset,
@@ -148,7 +150,7 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
     required TwoDimensionalChildBuilderDelegate delegate,
     required super.mainAxis,
     required super.childManager,
-    required this.cellSize,
+    required this.list,
     super.cacheExtent,
     super.clipBehavior = Clip.hardEdge,
   }) : super(delegate: delegate);
@@ -162,15 +164,13 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
     final TwoDimensionalChildBuilderDelegate builderDelegate =
         delegate as TwoDimensionalChildBuilderDelegate;
 
-    for (int x = 0; x <= builderDelegate.maxXIndex!; x++) {
-      for (int y = 0; y <= builderDelegate.maxYIndex!; y++) {
-        final ChildVicinity vicinity = ChildVicinity(xIndex: x, yIndex: y);
-        final RenderBox child = buildOrObtainChildFor(vicinity)!;
-        child.layout(constraints.loosen());
-      }
+    for (int cnt = 0; cnt < list.length; cnt++) {
+      final ChildVicinity vicinity = list.keys.elementAt(cnt);
+      final RenderBox child = buildOrObtainChildFor(vicinity)!;
+      //child.layout(constraints.loosen());
     }
 
-/*
+    Size cellSize = Size(200, 200);
     final int maxRowIndex = builderDelegate.maxYIndex!;
     final int maxColumnIndex = builderDelegate.maxXIndex!;
 
@@ -220,7 +220,7 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
       clampDouble(
           verticalExtent - viewportDimension.height, 0.0, double.infinity),
     );
-    */
+
     // Super class handles garbage collection too!
   }
   //per class handles garbage collection too!

@@ -24,15 +24,6 @@ class UtilScroll2dState extends State<UtilScroll2d> {
   bool _sizesAreReady = false;
   final List<Size> _sizes = [];
 
-  @override
-  void didUpdateWidget(UtilScroll2d oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.children != oldWidget.children || widget.positions != oldWidget.positions) {
-      _sizesAreReady = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) => _calculateSizes());
-    }
-  }
-
   void _calculateSizes() {
     _sizes.clear();
     for (int cnt = 0; cnt < widget.children.length; cnt = cnt + 1) {

@@ -46,7 +46,7 @@ class _LayoutState extends State<Layout> {
                     setState(() {});
                   })), 
                   const SizedBox(width: 8),
-                  Text(_zoomValue.toStringAsFixed(0), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400)),
+                  Text("${_zoomValue.toStringAsFixed(0)}%", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400)),
                 ]),
                 CDKButtonIcon(
                   icon: CupertinoIcons.sidebar_right,

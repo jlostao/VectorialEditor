@@ -2,6 +2,40 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
 import 'util_scroll2d.dart';
 
+class MyWidget extends StatefulWidget {
+  const MyWidget({super.key});
+
+  @override
+  MyWidgetState createState() => MyWidgetState();
+}
+
+class MyWidgetState extends State<MyWidget> {
+  double boxWidth = 100;
+  double boxHeight = 50;
+
+  void updateWidth(double newWidth) {
+    setState(() {
+      boxWidth = newWidth;
+    });
+  }
+
+  void updateHeight(double newHeight) {
+    setState(() {
+      boxHeight = newHeight;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: boxWidth,
+      height: boxHeight,
+      child: Container(color: CDKTheme.green)
+    );
+  }
+}
+
+
 class LayoutDesign extends StatefulWidget {
   final double zoom;
   const LayoutDesign({ super.key, this.zoom = 100 });
@@ -11,37 +45,50 @@ class LayoutDesign extends StatefulWidget {
 }
 
 class LayoutDesignState extends State<LayoutDesign> {
-  List<Offset> positions = [
-      const Offset(0, 0),
-      const Offset(100, 100),
-      const Offset(200, 200),
-      const Offset(500, 500),
-      const Offset(600, 600),
-      const Offset(800, 800),
-      const Offset(400, 900),
-  ];
+    final GlobalKey<MyWidgetState> _keyCanvas = GlobalKey();
+    final GlobalKey _keyLimit = GlobalKey();
+      List<Offset> _positions = [];
+      List<Widget> _widgets = [];
 
-  List<Widget> widgets = [
-      Text(key: GlobalKey(), 'Widget'),
-      Text(key: GlobalKey(), 'Widget 1'),
-      Text(key: GlobalKey(), 'Widget 2'),
-      Text(key: GlobalKey(), 'Widget 2b 500'),
-      Text(key: GlobalKey(), 'Widget 2c'),
-      Text(key: GlobalKey(), 'Widget 3'),
-      Text(key: GlobalKey(), 'Widget 3b'),
-  ];
 
   @override
   void initState() {
     super.initState();
+      _widgets = [
+          MyWidget(key: _keyCanvas),
+          Container(key: _keyLimit)
+      ];
   }
+
 
   @override
   Widget build(BuildContext context) {
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
-    return Container(color: theme.background, child: UtilScroll2d(
-      positions: positions,
-      children: widgets,
-    ));
+    return LayoutBuilder(builder: (context, constraints) {
+
+      double canvasWidth = 500 * widget.zoom / 100;
+      double canvasHeight = 300 * widget.zoom / 100;
+
+      double padding = 50;
+      double x = padding;
+      double y = padding;
+      double width = canvasWidth;
+      double height = canvasHeight;
+
+      _keyCanvas.currentState?.updateWidth(width);
+      _keyCanvas.currentState?.updateHeight(height);
+
+      double limitX = width + padding * 2;
+      double limitY = height + padding * 2;
+
+      _positions = [
+          Offset(x, y),
+          Offset(limitX, limitY),
+      ];
+      
+      return Container(color: theme.background, child: UtilScroll2d(
+      positions: _positions,
+      children: _widgets,
+    ));});
   }
 }

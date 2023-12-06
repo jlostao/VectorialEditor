@@ -14,9 +14,9 @@ class LayoutDesign extends StatefulWidget {
 }
 
 class LayoutDesignState extends State<LayoutDesign> {
-  ui.ImageShader? _shaderGrid;
-  double _scrollX = 0;
+  GlobalKey _keyScrollY = GlobalKey();
   double _scrollY = 0;
+  ui.ImageShader? _shaderGrid;
 
   @override
   void initState() {
@@ -63,16 +63,29 @@ class LayoutDesignState extends State<LayoutDesign> {
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
 
     return LayoutBuilder(builder: (context, constraints) {
-      return CustomPaint(
-        painter: DesignPainter(
-          appData: appData,
-          theme: theme,
-          zoom: widget.zoom,
-          shaderGrid: _shaderGrid,
-          scrollX: _scrollX,
-          scrollY: _scrollY,
-        ),
-        size: Size(constraints.maxWidth, constraints.maxHeight),
+      return Stack(
+        children: [
+          CustomPaint(
+            painter: DesignPainter(
+              appData: appData,
+              theme: theme,
+              zoom: widget.zoom,
+              shaderGrid: _shaderGrid,
+              centerX: 0,
+              centerY: _scrollY,
+            ),
+            size: Size(constraints.maxWidth, constraints.maxHeight),
+          ),
+          UtilCustomVerticalScroll(
+            key: _keyScrollY,
+            size: constraints.maxHeight,
+            onChanged: (value) {
+              setState(() {
+                _scrollY = value * 100;
+              });
+            },
+          ),
+        ],
       );
     });
   }
@@ -81,55 +94,56 @@ class LayoutDesignState extends State<LayoutDesign> {
 class DesignPainter extends CustomPainter {
   final AppData appData;
   final CDKTheme theme;
-  final double zoom;
   final ui.Shader? shaderGrid;
-  final double scrollX;
-  final double scrollY;
+  final double zoom;
+  final double centerX;
+  final double centerY;
 
   DesignPainter({
     required this.appData,
     required this.theme,
-    required this.zoom,
     this.shaderGrid,
-    this.scrollX = 0,
-    this.scrollY = 0,
+    required this.zoom,
+    this.centerX = 0,
+    this.centerY = 0,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     Size docSize = appData.docSize;
 
-    // Set canvas drawing limits
+    // Defineix els límits de dibuix del canvas
     canvas.save();
     Rect clipRect = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.clipRect(clipRect);
 
-    // Scale everything from now on based on zoom
+    // Dibuixa el fons de l'àrea
+    Paint paintBackground = Paint();
+    paintBackground.color = theme.backgroundSecondary1;
+    canvas.drawRect(clipRect, paintBackground);
+
+    // Calcula l'escalat basat en el zoom
     double scale = zoom / 100;
+
+    // Calcula la posició de translació per centrar el punt desitjat
+    double translateX = size.width / 2 - centerX * scale;
+    double translateY = size.height / 2 - centerY * scale;
+    canvas.translate(translateX, translateY);
+
+    // Aplica l'escalat
     canvas.scale(scale, scale);
 
-    // Draw document 'barckground grid'
-    double docX = 0;
-    double docY = 0;
+    // Dibuixa la 'reixa de fons' del document
+    double docX = -docSize.width / 2;
+    double docY = -docSize.height / 2;
     double docW = docSize.width;
     double docH = docSize.height;
-
-    if (docW > size.width / scale) {
-      docX -= scrollX;
-    } else {
-      docX = (size.width / scale - docW) / 2;
-    }
-    if (docH > size.height / scale) {
-      docY -= scrollY;
-    } else {
-      docY = (size.height / scale - docH) / 2;
-    }
 
     Paint paint = Paint();
     paint.shader = shaderGrid;
     canvas.drawRect(Rect.fromLTWH(docX, docY, docW, docH), paint);
 
-    // Restore canvas settings
+    // Restaura les configuracions del canvas
     canvas.restore();
   }
 
@@ -138,5 +152,60 @@ class DesignPainter extends CustomPainter {
     return oldDelegate.appData != appData ||
         oldDelegate.zoom != zoom ||
         oldDelegate.shaderGrid != shaderGrid;
+  }
+}
+
+class UtilCustomVerticalScroll extends StatefulWidget {
+  double size = 0;
+  final Function(double) onChanged;
+  UtilCustomVerticalScroll(
+      {super.key, required this.size, required this.onChanged});
+
+  @override
+  UtilCustomVerticalScrollState createState() =>
+      UtilCustomVerticalScrollState();
+}
+
+class UtilCustomVerticalScrollState extends State<UtilCustomVerticalScroll> {
+  double _topOffset = 0;
+
+  void _onVerticalDragUpdate(DragUpdateDetails details) {
+    setState(() {
+      double newTopOffset = _topOffset + details.delta.dy;
+      double halfSize = widget.size / 2;
+      double halfBar = 100 / 2;
+
+      newTopOffset =
+          newTopOffset.clamp(-halfSize + halfBar, halfSize - halfBar);
+      _topOffset = newTopOffset;
+
+      // Calcula l'offset normalitzat de -1 a +1
+      double offset = _topOffset / (halfSize - halfBar);
+      widget.onChanged(offset);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+          top: (widget.size / 2) + _topOffset - 50,
+          right: 0,
+          height: 100,
+          width: 10,
+          child: Container(
+            padding: const EdgeInsets.all(2.5),
+            child: GestureDetector(
+                onVerticalDragUpdate: _onVerticalDragUpdate,
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: CDKTheme.grey.withOpacity(0.5)),
+                )),
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -52,31 +52,30 @@ class UtilScroll2dState extends State<UtilScroll2d> {
       }).toList()));
     }
 
-    return //CupertinoScrollbar(
-        //controller: _scrollControllerV,
-        //child: CupertinoScrollbar(
-        //controller: _scrollControllerH,
-        //child:
-        TwoDimensionalGridView(
-      positions: widget.positions,
-      sizes: _sizes,
-      verticalDetails: ScrollableDetails.vertical(
-        controller: _scrollControllerV,
-      ),
-      horizontalDetails: ScrollableDetails.horizontal(
+    return CupertinoScrollbar(
+      controller: _scrollControllerV,
+      child: CupertinoScrollbar(
         controller: _scrollControllerH,
+        child: TwoDimensionalGridView(
+          positions: widget.positions,
+          sizes: _sizes,
+          verticalDetails: ScrollableDetails.vertical(
+            controller: _scrollControllerV,
+          ),
+          horizontalDetails: ScrollableDetails.horizontal(
+            controller: _scrollControllerH,
+          ),
+          diagonalDragBehavior: DiagonalDragBehavior.free,
+          delegate: TwoDimensionalChildBuilderDelegate(
+            maxXIndex: 0,
+            maxYIndex: widget.children.length - 1,
+            builder: (BuildContext context, ChildVicinity vicinity) {
+              return widget.children[vicinity.yIndex];
+            },
+          ),
+          children: widget.children,
+        ),
       ),
-      diagonalDragBehavior: DiagonalDragBehavior.free,
-      delegate: TwoDimensionalChildBuilderDelegate(
-        maxXIndex: 0,
-        maxYIndex: widget.children.length - 1,
-        builder: (BuildContext context, ChildVicinity vicinity) {
-          return widget.children[vicinity.yIndex];
-        },
-      ),
-      children: widget.children,
-      //),
-      //),
     );
   }
 }

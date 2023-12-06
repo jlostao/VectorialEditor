@@ -1,94 +1,142 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
-import 'util_scroll2d.dart';
-
-class MyWidget extends StatefulWidget {
-  const MyWidget({super.key});
-
-  @override
-  MyWidgetState createState() => MyWidgetState();
-}
-
-class MyWidgetState extends State<MyWidget> {
-  double boxWidth = 100;
-  double boxHeight = 50;
-
-  void updateWidth(double newWidth) {
-    setState(() {
-      boxWidth = newWidth;
-    });
-  }
-
-  void updateHeight(double newHeight) {
-    setState(() {
-      boxHeight = newHeight;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: boxWidth,
-      height: boxHeight,
-      child: Container(color: CDKTheme.green)
-    );
-  }
-}
-
+import 'package:provider/provider.dart';
+import 'app_data.dart';
 
 class LayoutDesign extends StatefulWidget {
   final double zoom;
-  const LayoutDesign({ super.key, this.zoom = 100 });
+  const LayoutDesign({super.key, this.zoom = 100});
 
   @override
   LayoutDesignState createState() => LayoutDesignState();
 }
 
 class LayoutDesignState extends State<LayoutDesign> {
-    final GlobalKey<MyWidgetState> _keyCanvas = GlobalKey();
-    final GlobalKey _keyLimit = GlobalKey();
-      List<Offset> _positions = [];
-      List<Widget> _widgets = [];
-
+  ui.ImageShader? _shaderGrid;
+  double _scrollX = 0;
+  double _scrollY = 0;
 
   @override
   void initState() {
     super.initState();
-      _widgets = [
-          MyWidget(key: _keyCanvas),
-          Container(key: _keyLimit)
-      ];
+    initShaders();
   }
 
+  Future<void> initShaders() async {
+    const double size = 5.0;
+    ui.PictureRecorder recorder = ui.PictureRecorder();
+    Canvas imageCanvas = Canvas(recorder);
+    final paint = Paint()..color = CDKTheme.white;
+    imageCanvas.drawRect(const Rect.fromLTWH(0, 0, size, size), paint);
+    imageCanvas.drawRect(const Rect.fromLTWH(size, size, size, size), paint);
+    paint.color = CDKTheme.grey100;
+    imageCanvas.drawRect(const Rect.fromLTWH(size, 0, size, size), paint);
+    imageCanvas.drawRect(const Rect.fromLTWH(0, size, size, size), paint);
+    int s = (size * 2).toInt();
+    int mida = 4;
+    List<List<double>> matIdent =
+        List.generate(mida, (_) => List.filled(mida, 0.0));
+    for (int i = 0; i < mida; i++) {
+      matIdent[i][i] = 1.0;
+    }
+    List<double> vecIdent = [];
+    for (int i = 0; i < mida; i++) {
+      vecIdent.addAll(matIdent[i]);
+    }
+    ui.Image? gridImage = await recorder.endRecording().toImage(s, s);
+    _shaderGrid = ui.ImageShader(
+      gridImage,
+      TileMode.repeated,
+      TileMode.repeated,
+      Float64List.fromList(vecIdent),
+    );
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_shaderGrid == null) return Container();
+
+    AppData appData = Provider.of<AppData>(context);
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
+
     return LayoutBuilder(builder: (context, constraints) {
+      return CustomPaint(
+        painter: DesignPainter(
+          appData: appData,
+          theme: theme,
+          zoom: widget.zoom,
+          shaderGrid: _shaderGrid,
+          scrollX: _scrollX,
+          scrollY: _scrollY,
+        ),
+        size: Size(constraints.maxWidth, constraints.maxHeight),
+      );
+    });
+  }
+}
 
-      double canvasWidth = 500 * widget.zoom / 100;
-      double canvasHeight = 300 * widget.zoom / 100;
+class DesignPainter extends CustomPainter {
+  final AppData appData;
+  final CDKTheme theme;
+  final double zoom;
+  final ui.Shader? shaderGrid;
+  final double scrollX;
+  final double scrollY;
 
-      double padding = 50;
-      double x = padding;
-      double y = padding;
-      double width = canvasWidth;
-      double height = canvasHeight;
+  DesignPainter({
+    required this.appData,
+    required this.theme,
+    required this.zoom,
+    this.shaderGrid,
+    this.scrollX = 0,
+    this.scrollY = 0,
+  });
 
-      _keyCanvas.currentState?.updateWidth(width);
-      _keyCanvas.currentState?.updateHeight(height);
+  @override
+  void paint(Canvas canvas, Size size) {
+    Size docSize = appData.docSize;
 
-      double limitX = width + padding * 2;
-      double limitY = height + padding * 2;
+    // Set canvas drawing limits
+    canvas.save();
+    Rect clipRect = Rect.fromLTWH(0, 0, size.width, size.height);
+    canvas.clipRect(clipRect);
 
-      _positions = [
-          Offset(x, y),
-          Offset(limitX, limitY),
-      ];
-      
-      return Container(color: theme.background, child: UtilScroll2d(
-      positions: _positions,
-      children: _widgets,
-    ));});
+    // Scale everything from now on based on zoom
+    double scale = zoom / 100;
+    canvas.scale(scale, scale);
+
+    // Draw document 'barckground grid'
+    double docX = 0;
+    double docY = 0;
+    double docW = docSize.width;
+    double docH = docSize.height;
+
+    if (docW > size.width / scale) {
+      docX -= scrollX;
+    } else {
+      docX = (size.width / scale - docW) / 2;
+    }
+    if (docH > size.height / scale) {
+      docY -= scrollY;
+    } else {
+      docY = (size.height / scale - docH) / 2;
+    }
+
+    Paint paint = Paint();
+    paint.shader = shaderGrid;
+    canvas.drawRect(Rect.fromLTWH(docX, docY, docW, docH), paint);
+
+    // Restore canvas settings
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant DesignPainter oldDelegate) {
+    return oldDelegate.appData != appData ||
+        oldDelegate.zoom != zoom ||
+        oldDelegate.shaderGrid != shaderGrid;
   }
 }

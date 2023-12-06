@@ -7,11 +7,8 @@ class UtilScroll2d extends StatefulWidget {
   final List<Widget> children;
   final List<Offset> positions;
 
-  const UtilScroll2d({
-    super.key,
-    required this.children,
-    required this.positions
-  });
+  const UtilScroll2d(
+      {super.key, required this.children, required this.positions});
 
   @override
   UtilScroll2dState createState() => UtilScroll2dState();
@@ -29,56 +26,57 @@ class UtilScroll2dState extends State<UtilScroll2d> {
     for (int cnt = 0; cnt < widget.children.length; cnt = cnt + 1) {
       Widget item = widget.children[cnt];
       GlobalKey key = item.key as GlobalKey;
-      final RenderBox renderBox = key.currentContext!.findRenderObject() as RenderBox;
+      final RenderBox renderBox =
+          key.currentContext!.findRenderObject() as RenderBox;
       final size = renderBox.size;
       _sizes.add(size);
     }
     _sizesAreReady = true;
-    setState(() { });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-
     if (!_sizesAreReady) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _calculateSizes());
 
       // First frame set sizes
-      return Offstage(child: Stack(children: 
-            widget.children.map((item) {
-            return Positioned(
-              left: 0,
-              top: 0,
-              child: item,
-            );
-          }).toList()
-      ));
+      return Offstage(
+          child: Stack(
+              children: widget.children.map((item) {
+        return Positioned(
+          left: 0,
+          top: 0,
+          child: item,
+        );
+      }).toList()));
     }
 
-    return CupertinoScrollbar(
-      controller: _scrollControllerV,
-      child: CupertinoScrollbar(
-        controller: _scrollControllerH,
-        child: TwoDimensionalGridView(
-          positions: widget.positions,
-          sizes: _sizes,
-          verticalDetails: ScrollableDetails.vertical(
-            controller: _scrollControllerV,
-          ),
-          horizontalDetails: ScrollableDetails.horizontal(
-            controller: _scrollControllerH,
-          ),
-          diagonalDragBehavior: DiagonalDragBehavior.free,
-          delegate: TwoDimensionalChildBuilderDelegate(
-            maxXIndex: 0,
-            maxYIndex: widget.children.length - 1,
-            builder: (BuildContext context, ChildVicinity vicinity) {
-              return widget.children[vicinity.yIndex];
-            },
-          ),
-          children: widget.children,
-        ),
+    return //CupertinoScrollbar(
+        //controller: _scrollControllerV,
+        //child: CupertinoScrollbar(
+        //controller: _scrollControllerH,
+        //child:
+        TwoDimensionalGridView(
+      positions: widget.positions,
+      sizes: _sizes,
+      verticalDetails: ScrollableDetails.vertical(
+        controller: _scrollControllerV,
       ),
+      horizontalDetails: ScrollableDetails.horizontal(
+        controller: _scrollControllerH,
+      ),
+      diagonalDragBehavior: DiagonalDragBehavior.free,
+      delegate: TwoDimensionalChildBuilderDelegate(
+        maxXIndex: 0,
+        maxYIndex: widget.children.length - 1,
+        builder: (BuildContext context, ChildVicinity vicinity) {
+          return widget.children[vicinity.yIndex];
+        },
+      ),
+      children: widget.children,
+      //),
+      //),
     );
   }
 }
@@ -150,19 +148,18 @@ class TwoDimensionalGridViewport extends TwoDimensionalViewport {
   @override
   RenderTwoDimensionalViewport createRenderObject(BuildContext context) {
     return RenderTwoDimensionalGridViewport(
-      horizontalOffset: horizontalOffset,
-      horizontalAxisDirection: horizontalAxisDirection,
-      verticalOffset: verticalOffset,
-      verticalAxisDirection: verticalAxisDirection,
-      mainAxis: mainAxis,
-      delegate: delegate as TwoDimensionalChildBuilderDelegate,
-      childManager: context as TwoDimensionalChildManager,
-      cacheExtent: cacheExtent,
-      clipBehavior: clipBehavior,
-      children: children,
-      positions: positions,
-      sizes: sizes
-    );
+        horizontalOffset: horizontalOffset,
+        horizontalAxisDirection: horizontalAxisDirection,
+        verticalOffset: verticalOffset,
+        verticalAxisDirection: verticalAxisDirection,
+        mainAxis: mainAxis,
+        delegate: delegate as TwoDimensionalChildBuilderDelegate,
+        childManager: context as TwoDimensionalChildManager,
+        cacheExtent: cacheExtent,
+        clipBehavior: clipBehavior,
+        children: children,
+        positions: positions,
+        sizes: sizes);
   }
 
   @override
@@ -224,12 +221,12 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
         bool widgetIsVisible = false;
         Offset widgetPosition = positions[row];
         Size widgetSize = sizes[row];
-        
-        widgetIsVisible = 
-            (widgetPosition.dx + widgetSize.width) >= horizontalPixels 
-          && (widgetPosition.dy + widgetSize.height) >= verticalPixels 
-          && widgetPosition.dx <= limitX
-          && widgetPosition.dy <= limitY;
+
+        widgetIsVisible =
+            (widgetPosition.dx + widgetSize.width) >= horizontalPixels &&
+                (widgetPosition.dy + widgetSize.height) >= verticalPixels &&
+                widgetPosition.dx <= limitX &&
+                widgetPosition.dy <= limitY;
 
         if (widgetIsVisible) {
           final ChildVicinity vicinity =
@@ -238,7 +235,9 @@ class RenderTwoDimensionalGridViewport extends RenderTwoDimensionalViewport {
           child.layout(constraints.loosen());
 
           // Set widgets at scroll position
-          Offset drawingPosition = Offset(widgetPosition.dx - horizontalOffset.pixels, widgetPosition.dy - verticalOffset.pixels);
+          Offset drawingPosition = Offset(
+              widgetPosition.dx - horizontalOffset.pixels,
+              widgetPosition.dy - verticalOffset.pixels);
           parentDataOf(child).layoutOffset = drawingPosition;
         }
 

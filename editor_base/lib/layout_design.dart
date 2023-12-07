@@ -106,6 +106,10 @@ class LayoutDesignState extends State<LayoutDesign> {
       return Stack(
         children: [
           GestureDetector(
+              onPanEnd: (details) {
+                _keyScrollX.currentState!.startInertiaAnimation();
+                _keyScrollY.currentState!.startInertiaAnimation();
+              },
               onPanUpdate: (DragUpdateDetails details) {
                 if (!_isMouseButtonPressed) {
                   if (details.delta.dy != 0) {

@@ -11,7 +11,7 @@ class LayoutDesign extends StatefulWidget {
 }
 
 class LayoutDesignState extends State<LayoutDesign> {
-  GlobalKey _key2D = GlobalKey();
+  final GlobalKey _key2D = GlobalKey();
   final GlobalKey _keyCanvas = GlobalKey();
   final GlobalKey _keyLimit = GlobalKey();
   List<Offset> _positions = [];
@@ -32,14 +32,14 @@ class LayoutDesignState extends State<LayoutDesign> {
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
 
     return LayoutBuilder(builder: (context, constraints) {
-      double canvasWidth = 500 * widget.zoom / 100;
-      double canvasHeight = 800 * widget.zoom / 100;
+      //double canvasWidth = 500 * widget.zoom / 100;
+      //double canvasHeight = 800 * widget.zoom / 100;
 
       double padding = 50;
       double x = padding;
       double y = padding;
-      double width = canvasWidth;
-      double height = canvasHeight;
+      //double width = canvasWidth;
+      //double height = canvasHeight;
 
       // _keyCanvas.currentState?.updateWidth(width);
       // _keyCanvas.currentState?.updateHeight(height);

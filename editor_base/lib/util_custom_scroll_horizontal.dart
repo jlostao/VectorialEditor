@@ -42,6 +42,11 @@ class UtilCustomScrollHorizontalState
   }
 
   @override
+  void setTrackpadDelta(double value) {
+    super.setTrackpadDelta(-value);
+  }
+
+  @override
   double getOffset() {
     return -offset;
   }
@@ -56,7 +61,7 @@ class UtilCustomScrollHorizontalState
         Positioned(
           bottom: 0,
           right: position,
-          height: 10,
+          height: 12,
           width: draggerSize,
           child: Container(
             padding: const EdgeInsets.all(2.5),

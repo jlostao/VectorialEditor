@@ -52,7 +52,7 @@ class UtilCustomScrollVerticalState
           top: position,
           right: 0,
           height: draggerSize,
-          width: 10,
+          width: 12,
           child: Container(
             padding: const EdgeInsets.all(2.5),
             child: GestureDetector(

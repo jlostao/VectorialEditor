@@ -22,6 +22,7 @@ class LayoutDesignState extends State<LayoutDesign> {
   final GlobalKey<UtilCustomScrollVerticalState> _keyScrollY = GlobalKey();
   bool _shadersReady = false;
   ui.ImageShader? _shaderGrid;
+  bool _isMouseButtonPressed = false;
 
   @override
   void initState() {
@@ -30,7 +31,7 @@ class LayoutDesignState extends State<LayoutDesign> {
   }
 
   Future<void> initShaders() async {
-    const double size = 5.0;
+    const double size = 10.0;
     ui.PictureRecorder recorder = ui.PictureRecorder();
     Canvas imageCanvas = Canvas(recorder);
     final paint = Paint()..color = CDKTheme.white;
@@ -40,14 +41,14 @@ class LayoutDesignState extends State<LayoutDesign> {
     imageCanvas.drawRect(const Rect.fromLTWH(size, 0, size, size), paint);
     imageCanvas.drawRect(const Rect.fromLTWH(0, size, size, size), paint);
     int s = (size * 2).toInt();
-    int mida = 4;
+    int matSize = 4;
     List<List<double>> matIdent =
-        List.generate(mida, (_) => List.filled(mida, 0.0));
-    for (int i = 0; i < mida; i++) {
+        List.generate(matSize, (_) => List.filled(matSize, 0.0));
+    for (int i = 0; i < matSize; i++) {
       matIdent[i][i] = 1.0;
     }
     List<double> vecIdent = [];
-    for (int i = 0; i < mida; i++) {
+    for (int i = 0; i < matSize; i++) {
       vecIdent.addAll(matIdent[i]);
     }
     ui.Image? gridImage = await recorder.endRecording().toImage(s, s);
@@ -105,15 +106,28 @@ class LayoutDesignState extends State<LayoutDesign> {
       return Stack(
         children: [
           GestureDetector(
-              onHorizontalDragUpdate: (DragUpdateDetails details) {
-                _keyScrollX.currentState!.setTrackpadDelta(details.delta.dx);
-              },
-              onVerticalDragUpdate: (DragUpdateDetails details) {
-                _keyScrollY.currentState!.setTrackpadDelta(details.delta.dy);
+              onPanUpdate: (DragUpdateDetails details) {
+                if (!_isMouseButtonPressed) {
+                  if (details.delta.dy != 0) {
+                    _keyScrollY.currentState!
+                        .setTrackpadDelta(details.delta.dy);
+                  }
+                  if (details.delta.dx != 0) {
+                    _keyScrollX.currentState!
+                        .setTrackpadDelta(details.delta.dx);
+                  }
+                }
               },
               child: Listener(
+                  onPointerDown: (event) {
+                    _isMouseButtonPressed = true;
+                  },
+                  onPointerUp: (event) {
+                    _isMouseButtonPressed = false;
+                  },
                   onPointerSignal: (pointerSignal) {
                     if (pointerSignal is PointerScrollEvent) {
+                      if (_isMouseButtonPressed) return;
                       _keyScrollX.currentState!
                           .setWheelDelta(pointerSignal.scrollDelta.dx);
                       _keyScrollY.currentState!

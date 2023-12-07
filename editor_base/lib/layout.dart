@@ -48,7 +48,6 @@ class _LayoutState extends State<Layout> {
                                   (value - 0.51) / (1 - 0.51);
                               appData.setZoom(normalizedValue * 400 + 100);
                             }
-                            setState(() {});
                           })),
                   const SizedBox(width: 8),
                   Text("${appData.zoom.toStringAsFixed(0)}%",

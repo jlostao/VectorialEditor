@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 
 abstract class BaseCustomScroll extends StatefulWidget {
@@ -107,7 +106,7 @@ abstract class BaseCustomScrollState<T extends BaseCustomScroll>
     if (averageVelocity == 0) return;
 
     double startValue = offset;
-    double endValue = startValue + averageVelocity * 1000;
+    double endValue = startValue + averageVelocity * 750;
     endValue = endValue.clamp(-1.0, 1.0);
     int durationMillis = (1000 / averageVelocity.abs()).clamp(10, 1000).toInt();
     _recentVelocities.clear();

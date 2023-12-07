@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
 import 'package:provider/provider.dart';
 import 'app_data.dart';
@@ -10,8 +11,7 @@ import 'util_custom_scroll_horizontal.dart';
 import 'util_mutable_offset.dart';
 
 class LayoutDesign extends StatefulWidget {
-  final double zoom;
-  const LayoutDesign({super.key, this.zoom = 100});
+  const LayoutDesign({super.key});
 
   @override
   LayoutDesignState createState() => LayoutDesignState();
@@ -23,6 +23,8 @@ class LayoutDesignState extends State<LayoutDesign> {
   bool _shadersReady = false;
   ui.ImageShader? _shaderGrid;
   bool _isMouseButtonPressed = false;
+  bool _isAltOptionKeyPressed = false;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -64,8 +66,8 @@ class LayoutDesignState extends State<LayoutDesign> {
 
   Size _getScrollArea(AppData appData) {
     Size docSize = appData.docSize;
-    return Size(((docSize.width * widget.zoom) / 100),
-        ((docSize.height * widget.zoom) / 100));
+    return Size(((docSize.width * appData.zoom) / 100),
+        ((docSize.height * appData.zoom) / 100));
   }
 
   Offset _getDisplacement(Size scrollArea, BoxConstraints constraints) {
@@ -90,7 +92,7 @@ class LayoutDesignState extends State<LayoutDesign> {
           _keyScrollX.currentState!.setOffset(0);
         } else {
           scrollCenter.dx = _keyScrollX.currentState!.getOffset() *
-              (scrollDisplacement.dx * 100 / widget.zoom);
+              (scrollDisplacement.dx * 100 / appData.zoom);
         }
       }
 
@@ -99,31 +101,49 @@ class LayoutDesignState extends State<LayoutDesign> {
           _keyScrollY.currentState!.setOffset(0);
         } else {
           scrollCenter.dy = _keyScrollY.currentState!.getOffset() *
-              (scrollDisplacement.dy * 100 / widget.zoom);
+              (scrollDisplacement.dy * 100 / appData.zoom);
         }
       }
 
       return Stack(
         children: [
-          GestureDetector(
+          RawKeyboardListener(
+            focusNode: _focusNode,
+            onKey: (event) {
+              if (event is RawKeyDownEvent) {
+                if (event.logicalKey == LogicalKeyboardKey.altLeft) {
+                  _isAltOptionKeyPressed = true;
+                }
+              } else if (event is RawKeyUpEvent) {
+                if (event.logicalKey == LogicalKeyboardKey.altLeft) {
+                  _isAltOptionKeyPressed = false;
+                }
+              }
+            },
+            child: GestureDetector(
               onPanEnd: (details) {
                 _keyScrollX.currentState!.startInertiaAnimation();
                 _keyScrollY.currentState!.startInertiaAnimation();
               },
               onPanUpdate: (DragUpdateDetails details) {
                 if (!_isMouseButtonPressed) {
-                  if (details.delta.dy != 0) {
-                    _keyScrollY.currentState!
-                        .setTrackpadDelta(details.delta.dy);
-                  }
-                  if (details.delta.dx != 0) {
-                    _keyScrollX.currentState!
-                        .setTrackpadDelta(details.delta.dx);
+                  if (_isAltOptionKeyPressed) {
+                    appData.setZoom(appData.zoom + details.delta.dy);
+                  } else {
+                    if (details.delta.dy != 0) {
+                        _keyScrollY.currentState!
+                          .setTrackpadDelta(details.delta.dy);
+                    }
+                    if (details.delta.dx != 0) {
+                        _keyScrollX.currentState!
+                          .setTrackpadDelta(details.delta.dx);
+                    }
                   }
                 }
               },
               child: Listener(
                   onPointerDown: (event) {
+                    _focusNode.requestFocus();
                     _isMouseButtonPressed = true;
                   },
                   onPointerUp: (event) {
@@ -131,24 +151,29 @@ class LayoutDesignState extends State<LayoutDesign> {
                   },
                   onPointerSignal: (pointerSignal) {
                     if (pointerSignal is PointerScrollEvent) {
-                      if (_isMouseButtonPressed) return;
-                      _keyScrollX.currentState!
-                          .setWheelDelta(pointerSignal.scrollDelta.dx);
-                      _keyScrollY.currentState!
-                          .setWheelDelta(pointerSignal.scrollDelta.dy);
+                      if (!_isMouseButtonPressed) {
+                        if (_isAltOptionKeyPressed) {
+
+                        } else {
+                          _keyScrollX.currentState!
+                              .setWheelDelta(pointerSignal.scrollDelta.dx);
+                          _keyScrollY.currentState!
+                              .setWheelDelta(pointerSignal.scrollDelta.dy);
+                        }
+                      }
                     }
                   },
                   child: CustomPaint(
                     painter: DesignPainter(
                       appData: appData,
                       theme: theme,
-                      zoom: widget.zoom,
+                      zoom: appData.zoom,
                       shaderGrid: _shaderGrid,
                       centerX: scrollCenter.dx,
                       centerY: scrollCenter.dy,
                     ),
                     size: Size(constraints.maxWidth, constraints.maxHeight),
-                  ))),
+                )))),
           UtilCustomScrollHorizontal(
             key: _keyScrollX,
             size: constraints.maxWidth,

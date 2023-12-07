@@ -1,5 +1,7 @@
+import 'package:editor_base/app_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
+import 'package:provider/provider.dart';
 import 'layout_design.dart';
 import 'layout_sidebar_right.dart';
 
@@ -13,7 +15,6 @@ class Layout extends StatefulWidget {
 class _LayoutState extends State<Layout> {
   GlobalKey<CDKAppSidebarsState> keyAppStructure = GlobalKey();
   double _zoomSlider = 0.5;
-  double _zoomValue = 100;
 
   void toggleRightSidebar() {
     final CDKAppSidebarsState? state = keyAppStructure.currentState;
@@ -24,6 +25,7 @@ class _LayoutState extends State<Layout> {
 
   @override
   Widget build(BuildContext context) {
+    AppData appData = Provider.of<AppData>(context);
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
 
     return CupertinoPageScaffold(
@@ -40,16 +42,16 @@ class _LayoutState extends State<Layout> {
                           onChanged: (value) {
                             _zoomSlider = value;
                             if (value < 0.5) {
-                              _zoomValue = value * 100 + 50;
+                              appData.zoom = value * 100 + 50;
                             } else {
                               double normalizedValue =
                                   (value - 0.51) / (1 - 0.51);
-                              _zoomValue = normalizedValue * 400 + 100;
+                              appData.zoom = normalizedValue * 400 + 100;
                             }
                             setState(() {});
                           })),
                   const SizedBox(width: 8),
-                  Text("${_zoomValue.toStringAsFixed(0)}%",
+                  Text("${appData.zoom.toStringAsFixed(0)}%",
                       style: const TextStyle(
                           fontSize: 12, fontWeight: FontWeight.w400)),
                 ]),
@@ -69,7 +71,7 @@ class _LayoutState extends State<Layout> {
           sidebarLeft: Container(),
           sidebarRight: const LayoutSidebarRight(),
           sidebarRightWidth: 250,
-          central: LayoutDesign(zoom: _zoomValue),
+          central: const LayoutDesign(),
         ));
   }
 }

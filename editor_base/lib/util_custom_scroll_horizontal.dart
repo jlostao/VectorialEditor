@@ -29,7 +29,7 @@ class UtilCustomScrollHorizontalState
         renderBox.globalToLocal(details.globalPosition);
     final bool isInsideHorizontally =
         (renderBox.paintBounds.left + 5) <= localPosition.dx &&
-            localPosition.dx <= (renderBox.paintBounds.bottom - 5);
+            localPosition.dx <= (renderBox.paintBounds.right - 5);
 
     if (isInsideHorizontally) {
       if (oldOffset != newOffset) {

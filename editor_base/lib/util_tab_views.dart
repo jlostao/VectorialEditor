@@ -22,7 +22,7 @@ class UtilTabViews extends StatefulWidget {
 }
 
 class UtilTabViewsState extends State<UtilTabViews> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   final List<ScrollController> _scrollControllers = [];
 
   @override

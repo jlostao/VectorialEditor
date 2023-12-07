@@ -20,7 +20,7 @@ class LayoutDesignPainter extends CustomPainter {
     this.centerY = 0,
   });
 
-  void drawRules(Canvas canvas, Size size, Size docSize, double scale, double translateX, double translateY) {
+  void drawRules(Canvas canvas,CDKTheme theme, Size size, Size docSize, double scale, double translateX, double translateY) {
     Rect rectRullerTop = Rect.fromLTWH(0, 0, size.width, 20);
     Paint paintRulerTop = Paint();
     paintRulerTop.color = theme.backgroundSecondary1;
@@ -32,15 +32,15 @@ class LayoutDesignPainter extends CustomPainter {
     double unitSize = 5 * scale;
     int cnt = 0;
     for (double i = xLeft; i < xRight; i += unitSize) {
-      if (i > 20 && i < size.width) {
-        Paint paintLine = Paint()..color = CDKTheme.black;
+      if (i > 0 && i < size.width) {
+        Paint paintLine = Paint()..color = theme.colorText;
         double adjustedPosition = i;
         double top = 15;
         if ((cnt % 100) == 0) {
           top = 0;
 
           TextSpan span = TextSpan(
-            style: const TextStyle(color: CDKTheme.black, fontSize: 10),
+            style: TextStyle(color: theme.colorText, fontSize: 10),
             text: '$cnt', 
           );
 
@@ -74,15 +74,15 @@ class LayoutDesignPainter extends CustomPainter {
 
     cnt = 0;
     for (double i = yTop; i < yBottom; i += unitSize) {
-      if (i > 20 && i < size.width) {
-        Paint paintLine = Paint()..color = CDKTheme.black;
+      if (i > 0 && i < size.width) {
+        Paint paintLine = Paint()..color = theme.colorText;
         double adjustedPosition = i;
         double left = 15;
         if ((cnt % 100) == 0) {
           left = 0;
 
           TextSpan span = TextSpan(
-            style: const TextStyle(color: CDKTheme.black, fontSize: 10),
+            style: TextStyle(color: theme.colorText, fontSize: 10),
             text: '$cnt', 
           );
 
@@ -105,6 +105,11 @@ class LayoutDesignPainter extends CustomPainter {
       }
       cnt = cnt + 5;
     }
+
+    Rect rectRullerCorner = const Rect.fromLTWH(0, 0, 20, 20);
+    Paint paintRulerCorner = Paint();
+    paintRulerCorner.color = theme.backgroundSecondary1;
+    canvas.drawRect(rectRullerCorner, paintRulerTop);
   }
 
   @override
@@ -121,12 +126,12 @@ class LayoutDesignPainter extends CustomPainter {
     paintBackground.color = theme.backgroundSecondary1;
     canvas.drawRect(visibleRect, paintBackground);
 
+    // Guarda l'estat previ a l'escalat i translació
+    canvas.save();
+
     // Calcula l'escalat basat en el zoom
     double scale = zoom / 100;
-
     Size scaledSize = Size(size.width / scale, size.height / scale);
-
-    // Aplica l'escalat
     canvas.scale(scale, scale);
 
     // Calcula la posició de translació per centrar el punt desitjat
@@ -159,11 +164,14 @@ class LayoutDesignPainter extends CustomPainter {
     canvas.drawLine(Offset(0, docH - 1), Offset(docW, docH - 1),
         paintLine2..strokeWidth = 1);
 
-    // Restaura les configuracions del canvas
+    // Restaura l'estat previ a l'escalat i translació
     canvas.restore();
 
     // Dibuixa la regla superior
-    drawRules(canvas, size, docSize, scale, translateX, translateY);
+    drawRules(canvas, theme, size, docSize, scale, translateX, translateY);
+
+    // Restaura l'estat de retall del canvas
+    canvas.restore();
   }
 
   @override

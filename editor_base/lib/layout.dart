@@ -42,11 +42,11 @@ class _LayoutState extends State<Layout> {
                           onChanged: (value) {
                             _zoomSlider = value;
                             if (value < 0.5) {
-                              appData.zoom = value * 100 + 50;
+                              appData.setZoom(value * 100 + 50);
                             } else {
                               double normalizedValue =
                                   (value - 0.51) / (1 - 0.51);
-                              appData.zoom = normalizedValue * 400 + 100;
+                              appData.setZoom(normalizedValue * 400 + 100);
                             }
                             setState(() {});
                           })),

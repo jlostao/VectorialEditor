@@ -153,7 +153,7 @@ class LayoutDesignState extends State<LayoutDesign> {
                     if (pointerSignal is PointerScrollEvent) {
                       if (!_isMouseButtonPressed) {
                         if (_isAltOptionKeyPressed) {
-
+                          appData.setZoom(appData.zoom + pointerSignal.scrollDelta.dy);
                         } else {
                           _keyScrollX.currentState!
                               .setWheelDelta(pointerSignal.scrollDelta.dx);

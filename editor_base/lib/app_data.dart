@@ -11,7 +11,7 @@ class AppData with ChangeNotifier {
   bool readyExample = false;
   late dynamic dataExample;
 
-  void setZoom (value) {
+  void setZoom (double value) {
     zoom = value.clamp(50, 500);
     notifyListeners();
   }

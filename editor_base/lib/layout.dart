@@ -14,7 +14,6 @@ class Layout extends StatefulWidget {
 
 class _LayoutState extends State<Layout> {
   GlobalKey<CDKAppSidebarsState> keyAppStructure = GlobalKey();
-  double _zoomSlider = 0.5;
 
   void toggleRightSidebar() {
     final CDKAppSidebarsState? state = keyAppStructure.currentState;
@@ -23,10 +22,21 @@ class _LayoutState extends State<Layout> {
     }
   }
 
+  double invertZoom(double zoom) {
+    if (zoom < 100) { 
+      return (zoom - 50) / 100;
+    } else {
+      double normalizedValue = (zoom - 100) / 400;
+      return normalizedValue * (1 - 0.51) + 0.51;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     AppData appData = Provider.of<AppData>(context);
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
+
+    double zoomSlider = invertZoom(appData.zoom);
 
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
@@ -38,9 +48,9 @@ class _LayoutState extends State<Layout> {
                   SizedBox(
                       width: 75,
                       child: CDKPickerSlider(
-                          value: _zoomSlider,
+                          value: zoomSlider,
                           onChanged: (value) {
-                            _zoomSlider = value;
+                            zoomSlider = value;
                             if (value < 0.5) {
                               appData.setZoom(value * 100 + 50);
                             } else {
@@ -48,6 +58,7 @@ class _LayoutState extends State<Layout> {
                                   (value - 0.51) / (1 - 0.51);
                               appData.setZoom(normalizedValue * 400 + 100);
                             }
+                            setState(() { });
                           })),
                   const SizedBox(width: 8),
                   Text("${appData.zoom.toStringAsFixed(0)}%",

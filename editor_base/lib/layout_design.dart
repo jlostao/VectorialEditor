@@ -34,7 +34,7 @@ class LayoutDesignState extends State<LayoutDesign> {
   }
 
   Future<void> initShaders() async {
-    const double size = 10.0;
+    const double size = 5.0;
     ui.PictureRecorder recorder = ui.PictureRecorder();
     Canvas imageCanvas = Canvas(recorder);
     final paint = Paint()..color = CDKTheme.white;
@@ -66,14 +66,13 @@ class LayoutDesignState extends State<LayoutDesign> {
   }
 
   Size _getScrollArea(AppData appData) {
-    Size docSize = appData.docSize;
-    return Size(((docSize.width * appData.zoom) / 100),
-        ((docSize.height * appData.zoom) / 100));
+    return Size(((appData.docSize.width * appData.zoom) / 100),
+        ((appData.docSize.height * appData.zoom) / 100));
   }
 
   Offset _getDisplacement(Size scrollArea, BoxConstraints constraints) {
-    return Offset((scrollArea.width - constraints.maxWidth) / 2,
-        (scrollArea.height - constraints.maxHeight) / 2);
+    return Offset(((scrollArea.width - constraints.maxWidth) / 2) + 25,
+        ((scrollArea.height - constraints.maxHeight) / 2) + 25);
   }
 
   @override

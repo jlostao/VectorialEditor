@@ -20,9 +20,96 @@ class LayoutDesignPainter extends CustomPainter {
     this.centerY = 0,
   });
 
+  void drawRules(Canvas canvas, Size size, Size docSize, double scale, double translateX, double translateY) {
+    Rect rectRullerTop = Rect.fromLTWH(0, 0, size.width, 20);
+    Paint paintRulerTop = Paint();
+    paintRulerTop.color = theme.backgroundSecondary1;
+    canvas.drawRect(rectRullerTop, paintRulerTop);
+
+    double xLeft = (0 + translateX) * scale;
+    double xRight = ((docSize.width + translateX) * scale) - 1;
+
+    double unitSize = 5 * scale;
+    int cnt = 0;
+    for (double i = xLeft; i < xRight; i += unitSize) {
+      if (i > 20 && i < size.width) {
+        Paint paintLine = Paint()..color = CDKTheme.black;
+        double adjustedPosition = i;
+        double top = 15;
+        if ((cnt % 100) == 0) {
+          top = 0;
+
+          TextSpan span = TextSpan(
+            style: const TextStyle(color: CDKTheme.black, fontSize: 10),
+            text: '$cnt', 
+          );
+
+          TextPainter tp = TextPainter(
+            text: span,
+            textAlign: TextAlign.left,
+            textDirection: TextDirection.ltr,
+          );
+          tp.layout();
+          tp.paint(canvas, Offset(adjustedPosition + 2.4, 0));
+
+        } else if ((cnt % 10) == 0) {
+          top = 10;
+        }
+        canvas.drawLine(
+          Offset(adjustedPosition, top),
+          Offset(adjustedPosition, 20),
+          paintLine,
+        );
+      }
+      cnt = cnt + 5;
+    }
+
+    Rect rectRullerLeft = Rect.fromLTWH(0, 0, 20, size.height);
+    Paint paintRulerLeft = Paint();
+    paintRulerLeft.color = theme.backgroundSecondary1;
+    canvas.drawRect(rectRullerLeft, paintRulerLeft);
+
+    double yTop = (0 + translateY) * scale;
+    double yBottom = ((docSize.height + translateY) * scale) - 1;
+
+    cnt = 0;
+    for (double i = yTop; i < yBottom; i += unitSize) {
+      if (i > 20 && i < size.width) {
+        Paint paintLine = Paint()..color = CDKTheme.black;
+        double adjustedPosition = i;
+        double left = 15;
+        if ((cnt % 100) == 0) {
+          left = 0;
+
+          TextSpan span = TextSpan(
+            style: const TextStyle(color: CDKTheme.black, fontSize: 10),
+            text: '$cnt', 
+          );
+
+          TextPainter tp = TextPainter(
+            text: span,
+            textAlign: TextAlign.left,
+            textDirection: TextDirection.ltr,
+          );
+          tp.layout();
+          tp.paint(canvas, Offset(0, adjustedPosition + 2.4));
+
+        } else if ((cnt % 10) == 0) {
+          left = 10;
+        }
+        canvas.drawLine(
+          Offset(left, adjustedPosition),
+          Offset(20, adjustedPosition),
+          paintLine,
+        );
+      }
+      cnt = cnt + 5;
+    }
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
-    Size docSize = appData.docSize;
+    Size docSize = Size(appData.docSize.width, appData.docSize.height);
 
     // Defineix els límits de dibuix del canvas
     canvas.save();
@@ -74,6 +161,9 @@ class LayoutDesignPainter extends CustomPainter {
 
     // Restaura les configuracions del canvas
     canvas.restore();
+
+    // Dibuixa la regla superior
+    drawRules(canvas, size, docSize, scale, translateX, translateY);
   }
 
   @override

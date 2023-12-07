@@ -17,8 +17,7 @@ class LayoutButtonsState extends State<LayoutSidebarRight> {
     AppData appData = Provider.of<AppData>(context);
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
 
-    Color backgroundColor =
-        theme.isLight ? const Color(0xFFFAFAFA) : const Color(0xFF555555);
+    Color backgroundColor = theme.backgroundSecondary1;
     double screenHeight = MediaQuery.of(context).size.height;
 
     TextStyle fontBold = const TextStyle(fontSize: 12, fontWeight: FontWeight.bold);

@@ -32,21 +32,26 @@ class _LayoutState extends State<Layout> {
           middle: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                  SizedBox(width: 75, child: CDKPickerSlider(value: _zoomSlider, onChanged: (value) {
-                    _zoomSlider = value;
-                    if (value < 0.5) {
-                      _zoomValue = value * 100 + 50;
-                    } else {
-                      double normalizedValue = (value - 0.51) / (1 - 0.51);
-                      _zoomValue = normalizedValue * 400 + 100;
-                    }
-                    setState(() {});
-                  })), 
+                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  SizedBox(
+                      width: 75,
+                      child: CDKPickerSlider(
+                          value: _zoomSlider,
+                          onChanged: (value) {
+                            _zoomSlider = value;
+                            if (value < 0.5) {
+                              _zoomValue = value * 100 + 50;
+                            } else {
+                              double normalizedValue =
+                                  (value - 0.51) / (1 - 0.51);
+                              _zoomValue = normalizedValue * 400 + 100;
+                            }
+                            setState(() {});
+                          })),
                   const SizedBox(width: 8),
-                  Text("${_zoomValue.toStringAsFixed(0)}%", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400)),
+                  Text("${_zoomValue.toStringAsFixed(0)}%",
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w400)),
                 ]),
                 CDKButtonIcon(
                   icon: CupertinoIcons.sidebar_right,

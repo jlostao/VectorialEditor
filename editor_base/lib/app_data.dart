@@ -8,7 +8,7 @@ class AppData with ChangeNotifier {
   // AppData appData = Provider.of<AppData>(context);
   // AppData appData = Provider.of<AppData>(context, listen: false)
 
-  Size docSize = const Size(300, 200);
+  Size docSize = const Size(1000, 1000);
 
   bool readyExample = false;
   late dynamic dataExample;

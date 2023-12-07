@@ -56,7 +56,7 @@ class UtilScroll2dState extends State<UtilScroll2d> {
       controller: _scrollControllerV,
       child: CupertinoScrollbar(
         controller: _scrollControllerH,
-        child: TwoDimensionalGridView(
+        child: TwoDimensionalView(
           positions: widget.positions,
           sizes: _sizes,
           verticalDetails: ScrollableDetails.vertical(
@@ -80,12 +80,12 @@ class UtilScroll2dState extends State<UtilScroll2d> {
   }
 }
 
-class TwoDimensionalGridView extends TwoDimensionalScrollView {
+class TwoDimensionalView extends TwoDimensionalScrollView {
   final List<Widget> children;
   final List<Offset> positions;
   final List<Size> sizes;
 
-  const TwoDimensionalGridView({
+  const TwoDimensionalView({
     super.key,
     super.primary,
     super.mainAxis = Axis.vertical,

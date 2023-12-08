@@ -74,6 +74,7 @@ class AppData with ChangeNotifier {
   }
 
   void addNewShapeToShapesList() {
+    // Si no hi ha almenys 2 punts, no es podrà dibuixar res
     if (newShape.points.length >= 2) {
       shapesList.add(newShape);
       newShape = Shape();

@@ -74,8 +74,10 @@ class AppData with ChangeNotifier {
   }
 
   void addNewShapeToShapesList() {
-    shapesList.add(newShape);
-    newShape = Shape();
-    notifyListeners();
+    if (newShape.points.length >= 2) {
+      shapesList.add(newShape);
+      newShape = Shape();
+      notifyListeners();
+    }
   }
 }

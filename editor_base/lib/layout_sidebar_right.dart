@@ -49,12 +49,14 @@ class LayoutButtonsState extends State<LayoutSidebarRight> {
                         Row(children: [
                           Text("Width:", style: font),
                           const SizedBox(width: 4),
-                          SizedBox(width: 70, child:
+                          SizedBox(width: 80, child:
                             CDKFieldNumeric(
                               value: appData.docSize.width,
                               min: 100,
                               max: 2500,
                               units: "px",
+                              increment: 100,
+                              decimals: 0,
                               onValueChanged: (value) {
                                 appData.setDocWidth(value);
                               },
@@ -62,12 +64,14 @@ class LayoutButtonsState extends State<LayoutSidebarRight> {
                           Expanded(child: Container()),
                           Text("Height:", style: font),
                           const SizedBox(width: 4),
-                          SizedBox(width: 70, child:
+                          SizedBox(width: 80, child:
                             CDKFieldNumeric(
                               value: appData.docSize.height,
                               min: 100,
                               max: 2500,
                               units: "px",
+                              increment: 100,
+                              decimals: 0,
                               onValueChanged: (value) {
                                 appData.setDocHeight(value);
                               },
@@ -79,7 +83,11 @@ class LayoutButtonsState extends State<LayoutSidebarRight> {
                 ),
                 SizedBox(
                   width: double.infinity, // Estira el widget horitzontalment
-                  child: Container(
+                  child: Row(children: [
+                    const Column(children: [
+                      Icon(CupertinoIcons.pencil)
+                    ]),
+                    Container(
                     padding: const EdgeInsets.all(4.0),
                     child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,8 +98,9 @@ class LayoutButtonsState extends State<LayoutSidebarRight> {
                         Text('Text 4'),
                         Text('Text 5'),
                       ],
-                    ),
-                  ),
+                    )),
+                  ]),
+                
                 ),
                 SizedBox(
                   width: double.infinity, // Estira el widget horitzontalment

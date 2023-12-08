@@ -13,7 +13,7 @@ class AppData with ChangeNotifier {
   late dynamic dataExample;
 
   void setZoom (double value) {
-    zoom = value.clamp(50, 500);
+    zoom = value.clamp(25, 500);
     notifyListeners();
   }
 
@@ -23,12 +23,24 @@ class AppData with ChangeNotifier {
           "AppData setZoomNormalized: value must be between 0 and 1");
     }
     if (value < 0.5) {
-      zoom = value * 100 + 50;
+      double min = 25;
+      zoom = zoom = ((value * (100 - min)) / 0.5) + min;
     } else {
       double normalizedValue = (value - 0.51) / (1 - 0.51);
       zoom = normalizedValue * 400 + 100;
     } 
     notifyListeners();
+  }
+
+  double getZoomNormalized() {
+    if (zoom < 100) { 
+      double min = 25;
+      double normalized = (((zoom - min) * 0.5) / (100 - min));
+      return normalized;
+    } else {
+      double normalizedValue = (zoom - 100) / 400;
+      return normalizedValue * (1 - 0.51) + 0.51;
+    }
   }
 
   void setDocWidth (double value) {

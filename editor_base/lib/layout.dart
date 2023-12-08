@@ -22,21 +22,14 @@ class _LayoutState extends State<Layout> {
     }
   }
 
-  double invertZoom(double zoom) {
-    if (zoom < 100) { 
-      return (zoom - 50) / 100;
-    } else {
-      double normalizedValue = (zoom - 100) / 400;
-      return normalizedValue * (1 - 0.51) + 0.51;
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
     AppData appData = Provider.of<AppData>(context);
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
 
-    double zoomSlider = invertZoom(appData.zoom);
+    double zoomSlider = appData.getZoomNormalized();
 
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
@@ -73,7 +66,7 @@ class _LayoutState extends State<Layout> {
           sidebarRightDefaultsVisible: true,
           sidebarLeft: Container(),
           sidebarRight: const LayoutSidebarRight(),
-          sidebarRightWidth: 250,
+          sidebarRightWidth: 275,
           central: const LayoutDesign(),
         ));
   }

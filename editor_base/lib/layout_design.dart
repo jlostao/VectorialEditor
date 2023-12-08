@@ -48,17 +48,25 @@ class LayoutDesignState extends State<LayoutDesign> {
   }
 
   // Retorna la posició x,y al document, respecte on s'ha fet click
-  Offset _getDocPosition(Offset position, double zoom, double sizeWidth, double sizeHeight, double docSizeWidth, double docSizeHeight, double centerX, double centerY) {
+  Offset _getDocPosition(
+      Offset position,
+      double zoom,
+      double sizeWidth,
+      double sizeHeight,
+      double docSizeWidth,
+      double docSizeHeight,
+      double centerX,
+      double centerY) {
     double scale = zoom / 100;
-    double translateX = (sizeWidth / (2 * scale)) - (docSizeWidth / 2) - centerX;
-    double translateY = (sizeHeight / (2 * scale)) - (docSizeHeight / 2) - centerY;
+    double translateX =
+        (sizeWidth / (2 * scale)) - (docSizeWidth / 2) - centerX;
+    double translateY =
+        (sizeHeight / (2 * scale)) - (docSizeHeight / 2) - centerY;
     double originalX = (position.dx / scale) - translateX;
     double originalY = (position.dy / scale) - translateY;
 
     return Offset(originalX, originalY);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -128,17 +136,33 @@ class LayoutDesignState extends State<LayoutDesign> {
                         _focusNode.requestFocus();
                         _isMouseButtonPressed = true;
                         if (appData.toolSelected == "pencil") {
-                          Size docSize = Size(appData.docSize.width, appData.docSize.height);
+                          Size docSize = Size(
+                              appData.docSize.width, appData.docSize.height);
                           appData.addNewShape(_getDocPosition(
-                              event.localPosition, appData.zoom, constraints.maxWidth, constraints.maxHeight, docSize.width, docSize.height, _scrollCenter.dx, _scrollCenter.dy));
+                              event.localPosition,
+                              appData.zoom,
+                              constraints.maxWidth,
+                              constraints.maxHeight,
+                              docSize.width,
+                              docSize.height,
+                              _scrollCenter.dx,
+                              _scrollCenter.dy));
                         }
                       },
                       onPointerMove: (event) {
                         if (_isMouseButtonPressed) {
                           if (appData.toolSelected == "pencil") {
-                            Size docSize = Size(appData.docSize.width, appData.docSize.height);
+                            Size docSize = Size(
+                                appData.docSize.width, appData.docSize.height);
                             appData.addPointToNewShape(_getDocPosition(
-                              event.localPosition, appData.zoom, constraints.maxWidth, constraints.maxHeight, docSize.width, docSize.height, _scrollCenter.dx, _scrollCenter.dy));
+                                event.localPosition,
+                                appData.zoom,
+                                constraints.maxWidth,
+                                constraints.maxHeight,
+                                docSize.width,
+                                docSize.height,
+                                _scrollCenter.dx,
+                                _scrollCenter.dy));
                           }
                         }
                       },

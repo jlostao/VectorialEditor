@@ -21,7 +21,7 @@ abstract class BaseCustomScrollState<T extends BaseCustomScroll>
   double offset = 0;
   AnimationController? _inertiaAnimationController;
   Animation<double>? _inertiaAnimation;
-  List<double> _recentVelocities = [];
+  final List<double> _recentVelocities = [];
 
   @override
   void initState() {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cupertino_desktop_kit/cdk.dart';
 import 'package:provider/provider.dart';
 import 'app_data.dart';
 import 'util_button_icon.dart';
@@ -9,6 +10,10 @@ class LayoutSidebarTools extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppData appData = Provider.of<AppData>(context);
+    CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
+
+    Color colorSelected = theme.colorText;
+    Color colorUnselected = theme.isLight ? const Color.fromARGB(255, 15, 15, 15) : const Color.fromARGB(255, 250, 250, 250);
 
     return Column(children: [
   Container(
@@ -22,7 +27,7 @@ class LayoutSidebarTools extends StatelessWidget {
       child: Opacity(
         opacity: appData.toolSelected == "pointer" ? 1.0 : 0.5,
         child: Image.asset('assets/images/arrow_pointer.png',
-            color: appData.toolSelected == "pointer" ? Colors.black : Colors.blue,
+            color: appData.toolSelected == "pointer" ? colorSelected : colorUnselected,
             width: 18, height: 18),
       ),
     ),
@@ -38,7 +43,7 @@ class LayoutSidebarTools extends StatelessWidget {
       child: Opacity(
         opacity: appData.toolSelected == "pencil" ? 1.0 : 0.5,
         child: Icon(Icons.edit,
-            color: appData.toolSelected == "pencil" ? Colors.black : Colors.blue,
+            color: appData.toolSelected == "pencil" ? colorSelected : colorUnselected,
             size: 18),
       ),
     ),

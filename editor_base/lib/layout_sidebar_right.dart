@@ -13,7 +13,7 @@ class LayoutSidebarRight extends StatelessWidget {
     AppData appData = Provider.of<AppData>(context);
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
 
-    Color backgroundColor = theme.backgroundSecondary1;
+    Color backgroundColor = theme.backgroundSecondary2;
     double screenHeight = MediaQuery.of(context).size.height;
 
     TextStyle fontBold = const TextStyle(fontSize: 12, fontWeight: FontWeight.bold);

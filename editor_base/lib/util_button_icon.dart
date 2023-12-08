@@ -11,12 +11,12 @@ class UtilButtonIcon extends StatefulWidget {
   final Widget child;
 
   const UtilButtonIcon({
-    Key? key,
+    super.key,
     this.onPressed,
     this.size = 24.0,
     this.isSelected = false,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   UtilButtonIconState createState() => UtilButtonIconState();
@@ -64,14 +64,6 @@ class UtilButtonIconState extends State<UtilButtonIcon> {
                 : widget.isSelected
                     ? theme.backgroundSecondary1
                     : CDKTheme.transparent;
-
-    final Color textColor = theme.isLight
-        ? widget.isSelected && theme.isAppFocused
-            ? theme.accent
-            : theme.colorText
-        : widget.isSelected && theme.isAppFocused
-            ? CDKTheme.white
-            : theme.colorText;
 
     return MouseRegion(
       onEnter: _onMouseEnter,

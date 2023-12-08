@@ -11,25 +11,38 @@ class LayoutSidebarTools extends StatelessWidget {
     AppData appData = Provider.of<AppData>(context);
 
     return Column(children: [
-      Container(
-          padding: const EdgeInsets.only(top: 2, left: 2),
-          child: UtilButtonIcon(
-              size: 24,
-              isSelected: appData.toolSelected == "pointer",
-              onPressed: () {
-                appData.setToolSelected("pointer");
-              },
-              child: Image.asset('assets/images/arrow_pointer.png',
-                  width: 18, height: 18))),
-      Container(
-          padding: const EdgeInsets.only(top: 2, left: 2),
-          child: UtilButtonIcon(
-              size: 24,
-              isSelected: appData.toolSelected == "pencil",
-              onPressed: () {
-                appData.setToolSelected("pencil");
-              },
-              child: Icon(Icons.edit, size: 18))),
+  Container(
+    padding: const EdgeInsets.only(top: 2, left: 2),
+    child: UtilButtonIcon(
+      size: 24,
+      isSelected: appData.toolSelected == "pointer",
+      onPressed: () {
+        appData.setToolSelected("pointer");
+      },
+      child: Opacity(
+        opacity: appData.toolSelected == "pointer" ? 1.0 : 0.5,
+        child: Image.asset('assets/images/arrow_pointer.png',
+            color: appData.toolSelected == "pointer" ? Colors.black : Colors.blue,
+            width: 18, height: 18),
+      ),
+    ),
+  ),
+  Container(
+    padding: const EdgeInsets.only(top: 2, left: 2),
+    child: UtilButtonIcon(
+      size: 24,
+      isSelected: appData.toolSelected == "pencil",
+      onPressed: () {
+        appData.setToolSelected("pencil");
+      },
+      child: Opacity(
+        opacity: appData.toolSelected == "pencil" ? 1.0 : 0.5,
+        child: Icon(Icons.edit,
+            color: appData.toolSelected == "pencil" ? Colors.black : Colors.blue,
+            size: 18),
+      ),
+    ),
+  ),
     ]);
   }
 }

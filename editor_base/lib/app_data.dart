@@ -17,6 +17,20 @@ class AppData with ChangeNotifier {
     notifyListeners();
   }
 
+  void setZoomNormalized (double value) {
+    if (value < 0 || value > 1) {
+      throw Exception(
+          "AppData setZoomNormalized: value must be between 0 and 1");
+    }
+    if (value < 0.5) {
+      zoom = value * 100 + 50;
+    } else {
+      double normalizedValue = (value - 0.51) / (1 - 0.51);
+      zoom = normalizedValue * 400 + 100;
+    } 
+    notifyListeners();
+  }
+
   void setDocWidth (double value) {
     docSize.width = value;
     notifyListeners();

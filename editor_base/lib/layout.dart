@@ -51,14 +51,7 @@ class _LayoutState extends State<Layout> {
                           value: zoomSlider,
                           onChanged: (value) {
                             zoomSlider = value;
-                            if (value < 0.5) {
-                              appData.setZoom(value * 100 + 50);
-                            } else {
-                              double normalizedValue =
-                                  (value - 0.51) / (1 - 0.51);
-                              appData.setZoom(normalizedValue * 400 + 100);
-                            }
-                            setState(() { });
+                            appData.setZoomNormalized(value);
                           })),
                   const SizedBox(width: 8),
                   Text("${appData.zoom.toStringAsFixed(0)}%",

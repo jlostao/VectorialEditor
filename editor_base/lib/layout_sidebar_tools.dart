@@ -11,7 +11,7 @@ class LayoutSidebarTools extends StatelessWidget {
   Widget build(BuildContext context) {
     AppData appData = Provider.of<AppData>(context);
 
-    return ListView(children: [
+    return Column(children: [
       Container(
           padding: const EdgeInsets.only(top: 2, left: 2),
           child: CDKButtonIcon(

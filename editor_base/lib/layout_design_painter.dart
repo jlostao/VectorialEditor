@@ -20,7 +20,7 @@ class LayoutDesignPainter extends CustomPainter {
     this.centerY = 0,
   });
 
-  void drawRules(Canvas canvas,CDKTheme theme, Size size, Size docSize, double scale, double translateX, double translateY) {
+  void drawRulers(Canvas canvas,CDKTheme theme, Size size, Size docSize, double scale, double translateX, double translateY) {
     Rect rectRullerTop = Rect.fromLTWH(0, 0, size.width, 20);
     Paint paintRulerTop = Paint();
     paintRulerTop.color = theme.backgroundSecondary1;
@@ -168,7 +168,7 @@ class LayoutDesignPainter extends CustomPainter {
     canvas.restore();
 
     // Dibuixa la regla superior
-    drawRules(canvas, theme, size, docSize, scale, translateX, translateY);
+    drawRulers(canvas, theme, size, docSize, scale, translateX, translateY);
 
     // Restaura l'estat de retall del canvas
     canvas.restore();

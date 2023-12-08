@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'util_mutable_offset.dart';
 import 'util_mutable_size.dart';
 
@@ -9,21 +10,21 @@ class Shape {
 
   Shape();
 
-  void setPosition(double x, double y) {
-    position.dx = x;
-    position.dy = y;
+  void setPosition(Offset newPosition) {
+    position.dx = newPosition.dx;
+    position.dy = newPosition.dy;
   }
 
-  void setScale(double width, double height) {
-    scale.width = width;
-    scale.height = height;
+  void setScale(Size newScale) {
+    scale.width = newScale.width;
+    scale.height = newScale.height;
   }
 
   void setRotation(double newRotation) {
     rotation = newRotation;
   }
 
-  void addPoint(double x, double y) {
-    points.add(MutableOffset(x, y));
+  void addPoint(Offset point) {
+    points.add(MutableOffset(point.dx, point.dy));
   }
 }

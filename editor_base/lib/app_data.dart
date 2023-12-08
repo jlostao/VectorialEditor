@@ -61,4 +61,21 @@ class AppData with ChangeNotifier {
     toolSelected = name;
     notifyListeners();
   }
+
+  void addNewShape(Offset position) {
+    newShape = Shape();
+    newShape.setPosition(position);
+    notifyListeners();
+  }
+
+  void addPointToNewShape(Offset point) {
+    newShape.addPoint(point);
+    notifyListeners();
+  }
+
+  void addNewShapeToShapesList() {
+    shapesList.add(newShape);
+    newShape = Shape();
+    notifyListeners();
+  }
 }

@@ -20,6 +20,7 @@ class LayoutDesign extends StatefulWidget {
 class LayoutDesignState extends State<LayoutDesign> {
   final GlobalKey<UtilCustomScrollHorizontalState> _keyScrollX = GlobalKey();
   final GlobalKey<UtilCustomScrollVerticalState> _keyScrollY = GlobalKey();
+  final MutableOffset _scrollCenter = MutableOffset(0, 0);
   bool _isMouseButtonPressed = false;
   bool _isAltOptionKeyPressed = false;
   final FocusNode _focusNode = FocusNode();
@@ -45,6 +46,13 @@ class LayoutDesignState extends State<LayoutDesign> {
         ((scrollArea.height - constraints.maxHeight) / 2) + 25);
   }
 
+  Offset _getDocPosition(Offset position, double zoom) {
+    //return Offset((position.dx - _scrollCenter.dx) * (100 / zoom),
+    //    (position.dy - _scrollCenter.dy) * (100 / zoom));
+    print((position.dx - _scrollCenter.dx) * (100 / zoom));
+    return position;
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -53,13 +61,12 @@ class LayoutDesignState extends State<LayoutDesign> {
 
       Size scrollArea = _getScrollArea(appData);
       Offset scrollDisplacement = _getDisplacement(scrollArea, constraints);
-      MutableOffset scrollCenter = MutableOffset(0, 0);
 
       if (_keyScrollX.currentState != null) {
         if (scrollArea.width < constraints.maxWidth) {
           _keyScrollX.currentState!.setOffset(0);
         } else {
-          scrollCenter.dx = _keyScrollX.currentState!.getOffset() *
+          _scrollCenter.dx = _keyScrollX.currentState!.getOffset() *
               (scrollDisplacement.dx * 100 / appData.zoom);
         }
       }
@@ -68,7 +75,7 @@ class LayoutDesignState extends State<LayoutDesign> {
         if (scrollArea.height < constraints.maxHeight) {
           _keyScrollY.currentState!.setOffset(0);
         } else {
-          scrollCenter.dy = _keyScrollY.currentState!.getOffset() *
+          _scrollCenter.dy = _keyScrollY.currentState!.getOffset() *
               (scrollDisplacement.dy * 100 / appData.zoom);
         }
       }
@@ -114,30 +121,21 @@ class LayoutDesignState extends State<LayoutDesign> {
                         _focusNode.requestFocus();
                         _isMouseButtonPressed = true;
                         if (appData.toolSelected == "pencil") {
-                          appData.newShape = Shape();
-                          appData.newShape.setPosition(
-                              event.localPosition.dx, event.localPosition.dy);
-                          /*
-                          (event.localPosition.dx - scrollDisplacement.dx) *
-                              100 /
-                              appData.zoom,
-                          (event.localPosition.dy - scrollDisplacement.dy) *
-                              100 /
-                              appData.zoom);*/
+                          appData.addNewShape(_getDocPosition(
+                              event.localPosition, appData.zoom));
                         }
                       },
                       onPointerMove: (event) {
                         if (_isMouseButtonPressed) {
                           if (appData.toolSelected == "pencil") {
-                            appData.newShape.addPoint(
-                                event.localPosition.dx, event.localPosition.dy);
+                            appData.addPointToNewShape(_getDocPosition(
+                                event.localPosition, appData.zoom));
                           }
                         }
                       },
                       onPointerUp: (event) {
                         _isMouseButtonPressed = false;
-                        appData.shapesList.add(appData.newShape);
-                        appData.newShape = Shape();
+                        appData.addNewShapeToShapesList();
                       },
                       onPointerSignal: (pointerSignal) {
                         if (pointerSignal is PointerScrollEvent) {
@@ -159,8 +157,8 @@ class LayoutDesignState extends State<LayoutDesign> {
                           appData: appData,
                           theme: theme,
                           zoom: appData.zoom,
-                          centerX: scrollCenter.dx,
-                          centerY: scrollCenter.dy,
+                          centerX: _scrollCenter.dx,
+                          centerY: _scrollCenter.dy,
                         ),
                         size: Size(constraints.maxWidth, constraints.maxHeight),
                       )))),

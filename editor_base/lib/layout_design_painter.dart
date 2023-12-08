@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
 import 'app_data.dart';
+import 'util_shape.dart';
 
 class LayoutDesignPainter extends CustomPainter {
   final AppData appData;
@@ -45,7 +46,7 @@ class LayoutDesignPainter extends CustomPainter {
       vecIdent.addAll(matIdent[i]);
     }
     ui.Image? gridImage = await recorder.endRecording().toImage(s, s);
-      _shaderGrid = ui.ImageShader(
+    _shaderGrid = ui.ImageShader(
       gridImage,
       TileMode.repeated,
       TileMode.repeated,
@@ -55,7 +56,8 @@ class LayoutDesignPainter extends CustomPainter {
     _shadersReady = true;
   }
 
-  void drawRulers(Canvas canvas,CDKTheme theme, Size size, Size docSize, double scale, double translateX, double translateY) {
+  void drawRulers(Canvas canvas, CDKTheme theme, Size size, Size docSize,
+      double scale, double translateX, double translateY) {
     Rect rectRullerTop = Rect.fromLTWH(0, 0, size.width, 20);
     Paint paintRulerTop = Paint();
     paintRulerTop.color = theme.backgroundSecondary1;
@@ -76,7 +78,7 @@ class LayoutDesignPainter extends CustomPainter {
 
           TextSpan span = TextSpan(
             style: TextStyle(color: theme.colorText, fontSize: 10),
-            text: '$cnt', 
+            text: '$cnt',
           );
 
           TextPainter tp = TextPainter(
@@ -86,7 +88,6 @@ class LayoutDesignPainter extends CustomPainter {
           );
           tp.layout();
           tp.paint(canvas, Offset(adjustedPosition + 2.4, 0));
-
         } else if ((cnt % 10) == 0) {
           top = 10;
         }
@@ -118,7 +119,7 @@ class LayoutDesignPainter extends CustomPainter {
 
           TextSpan span = TextSpan(
             style: TextStyle(color: theme.colorText, fontSize: 10),
-            text: '$cnt', 
+            text: '$cnt',
           );
 
           TextPainter tp = TextPainter(
@@ -128,7 +129,6 @@ class LayoutDesignPainter extends CustomPainter {
           );
           tp.layout();
           tp.paint(canvas, Offset(0, adjustedPosition + 2.4));
-
         } else if ((cnt % 10) == 0) {
           left = 10;
         }
@@ -183,7 +183,39 @@ class LayoutDesignPainter extends CustomPainter {
       Paint paint = Paint();
       paint.shader = _shaderGrid;
       canvas.drawRect(Rect.fromLTWH(0, 0, docW, docH), paint);
-    }  
+    }
+
+    // Dibuixa la llista de poligons (segons correspon)
+    if (appData.shapesList.isNotEmpty) {
+      for (int i = 0; i < appData.shapesList.length; i++) {
+        Shape shape = appData.shapesList[i];
+        Paint paint = Paint();
+        paint.color = theme.colorText;
+        paint.style = PaintingStyle.stroke;
+        paint.strokeWidth = 1;
+        Path path = Path();
+        path.moveTo(shape.points[0].dx, shape.points[0].dy);
+        for (int i = 1; i < shape.points.length; i++) {
+          path.lineTo(shape.points[i].dx, shape.points[i].dy);
+        }
+        canvas.drawPath(path, paint);
+      }
+    }
+
+    // Dibuixa el poligon que s'està afegint
+    if (appData.newShape.points.isNotEmpty) {
+      Paint paint = Paint();
+      paint.color = theme.colorText;
+      paint.style = PaintingStyle.stroke;
+      paint.strokeWidth = 1;
+      Path path = Path();
+      path.moveTo(appData.newShape.points[0].dx, appData.newShape.points[0].dy);
+      for (int i = 1; i < appData.newShape.points.length; i++) {
+        path.lineTo(
+            appData.newShape.points[i].dx, appData.newShape.points[i].dy);
+      }
+      canvas.drawPath(path, paint);
+    }
 
     // Dibuixa una diagonal vermella a tot el document
     Paint paintLine0 = Paint();
@@ -213,7 +245,6 @@ class LayoutDesignPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant LayoutDesignPainter oldDelegate) {
-    return oldDelegate.appData != appData ||
-        oldDelegate.zoom != zoom;
-    }
+    return oldDelegate.appData != appData || oldDelegate.zoom != zoom;
+  }
 }

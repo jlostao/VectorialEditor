@@ -74,21 +74,22 @@ class UtilToolIconState extends State<UtilToolIcon> {
         onTapCancel: _onTapCancel,
         onTap: widget.onPressed,
         child: DecoratedBox(
-                decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.circular(8)),
-                child: Container(
-                    width: widget.size,
-                    height: widget.size,
-                    alignment: Alignment.center,
-                    child: Icon(
-                      widget.icon,
-                      color: widget.isSelected && theme.isAppFocused
-                          ? theme.isLight ? theme.accent : CDKTheme.white
-                          : theme.colorText,
-                      size: widget.size * 0.75,
-                    )),
-              ),
+          decoration: BoxDecoration(
+              color: backgroundColor, borderRadius: BorderRadius.circular(8)),
+          child: Container(
+              width: widget.size,
+              height: widget.size,
+              alignment: Alignment.center,
+              child: Icon(
+                widget.icon,
+                color: widget.isSelected && theme.isAppFocused
+                    ? theme.isLight
+                        ? theme.accent
+                        : CDKTheme.white
+                    : theme.colorText,
+                size: widget.size * 0.75,
+              )),
+        ),
       ),
     );
   }

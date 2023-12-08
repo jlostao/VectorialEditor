@@ -14,7 +14,7 @@ class UtilTabViews extends StatefulWidget {
     required this.views,
     required this.options,
     this.isAccent = false,
-  })  : assert(views.length == options.length,
+  }) : assert(views.length == options.length,
             'The number of views and tab texts must be the same.');
 
   @override

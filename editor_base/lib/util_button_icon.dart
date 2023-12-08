@@ -74,15 +74,14 @@ class UtilButtonIconState extends State<UtilButtonIcon> {
         onTapCancel: _onTapCancel,
         onTap: widget.onPressed,
         child: DecoratedBox(
-                decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.circular(8)),
-                child: Container(
-                    width: widget.size,
-                    height: widget.size,
-                    alignment: Alignment.center,
-                    child: widget.child),
-              ),
+          decoration: BoxDecoration(
+              color: backgroundColor, borderRadius: BorderRadius.circular(8)),
+          child: Container(
+              width: widget.size,
+              height: widget.size,
+              alignment: Alignment.center,
+              child: widget.child),
+        ),
       ),
     );
   }

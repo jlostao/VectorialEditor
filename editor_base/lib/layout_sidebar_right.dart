@@ -16,7 +16,8 @@ class LayoutSidebarRight extends StatelessWidget {
     Color backgroundColor = theme.backgroundSecondary2;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    TextStyle fontBold = const TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
+    TextStyle fontBold =
+        const TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
     TextStyle font = const TextStyle(fontSize: 12, fontWeight: FontWeight.w400);
 
     return Container(
@@ -25,7 +26,7 @@ class LayoutSidebarRight extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           children: <Widget>[
             Container(
-              padding: const EdgeInsets.only(top:1.0),
+              padding: const EdgeInsets.only(top: 1.0),
               height: screenHeight - 45,
               color: backgroundColor,
               child: UtilTabViews(isAccent: true, options: const [
@@ -38,61 +39,63 @@ class LayoutSidebarRight extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(4.0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Document dimensions:", style: fontBold),
-                        const SizedBox(height: 8),
-                        Row(children: [
-                          Text("Width:", style: font),
-                          const SizedBox(width: 4),
-                          SizedBox(width: 80, child:
-                            CDKFieldNumeric(
-                              value: appData.docSize.width,
-                              min: 100,
-                              max: 2500,
-                              units: "px",
-                              increment: 100,
-                              decimals: 0,
-                              onValueChanged: (value) {
-                                appData.setDocWidth(value);
-                              },
-                            )),
-                          Expanded(child: Container()),
-                          Text("Height:", style: font),
-                          const SizedBox(width: 4),
-                          SizedBox(width: 80, child:
-                            CDKFieldNumeric(
-                              value: appData.docSize.height,
-                              min: 100,
-                              max: 2500,
-                              units: "px",
-                              increment: 100,
-                              decimals: 0,
-                              onValueChanged: (value) {
-                                appData.setDocHeight(value);
-                              },
-                            ))
-                        ],)
-                      
-                    ]),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Document dimensions:", style: fontBold),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text("Width:", style: font),
+                              const SizedBox(width: 4),
+                              SizedBox(
+                                  width: 80,
+                                  child: CDKFieldNumeric(
+                                    value: appData.docSize.width,
+                                    min: 100,
+                                    max: 2500,
+                                    units: "px",
+                                    increment: 100,
+                                    decimals: 0,
+                                    onValueChanged: (value) {
+                                      appData.setDocWidth(value);
+                                    },
+                                  )),
+                              Expanded(child: Container()),
+                              Text("Height:", style: font),
+                              const SizedBox(width: 4),
+                              SizedBox(
+                                  width: 80,
+                                  child: CDKFieldNumeric(
+                                    value: appData.docSize.height,
+                                    min: 100,
+                                    max: 2500,
+                                    units: "px",
+                                    increment: 100,
+                                    decimals: 0,
+                                    onValueChanged: (value) {
+                                      appData.setDocHeight(value);
+                                    },
+                                  ))
+                            ],
+                          )
+                        ]),
                   ),
                 ),
                 SizedBox(
                   width: double.infinity, // Estira el widget horitzontalment
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                    const LayoutSidebarTools(),
-                    Container(
-                    padding: const EdgeInsets.all(4.0),
-                    child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Tool widgets'),
-                      ],
-                    )),
-                  ]),
-                
+                        const LayoutSidebarTools(),
+                        Container(
+                            padding: const EdgeInsets.all(4.0),
+                            child: const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Tool widgets'),
+                              ],
+                            )),
+                      ]),
                 ),
                 SizedBox(
                   width: double.infinity, // Estira el widget horitzontalment

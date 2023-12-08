@@ -99,7 +99,9 @@ abstract class BaseCustomScrollState<T extends BaseCustomScroll>
   }
 
   void startInertiaAnimation() {
-    double averageVelocity = _recentVelocities.isEmpty ? 0 :  _recentVelocities.reduce((a, b) => a + b) / _recentVelocities.length;
+    double averageVelocity = _recentVelocities.isEmpty
+        ? 0
+        : _recentVelocities.reduce((a, b) => a + b) / _recentVelocities.length;
     averageVelocity = _smoothVelocity(averageVelocity);
     if (averageVelocity.abs() < 0.001) return;
 

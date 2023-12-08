@@ -9,6 +9,8 @@ class AppData with ChangeNotifier {
   double zoom = 100;
   MutableSize docSize = MutableSize(500, 400);
   String toolSelected = "pencil";
+  String newShape = UtilShape();
+  List<UtilShape> shapesList = [];
 
   bool readyExample = false;
   late dynamic dataExample;

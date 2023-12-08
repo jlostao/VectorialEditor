@@ -8,6 +8,7 @@ import 'layout_design_painter.dart';
 import 'util_custom_scroll_vertical.dart';
 import 'util_custom_scroll_horizontal.dart';
 import 'util_mutable_offset.dart';
+import 'util_shape.dart';
 
 class LayoutDesign extends StatefulWidget {
   const LayoutDesign({super.key});
@@ -112,9 +113,31 @@ class LayoutDesignState extends State<LayoutDesign> {
                   onPointerDown: (event) {
                     _focusNode.requestFocus();
                     _isMouseButtonPressed = true;
+                    if (appData.toolSelected == "pencil") {
+                      appData.newShape = UtilShape();
+                      appData.newShape.setPosition(event.localPosition.dx,
+                          event.localPosition.dy);
+                        /*
+                          (event.localPosition.dx - scrollDisplacement.dx) *
+                              100 /
+                              appData.zoom,
+                          (event.localPosition.dy - scrollDisplacement.dy) *
+                              100 /
+                              appData.zoom);*/
+                    }
+                  },
+                  onPointerMove: (event) {
+                    if (_isMouseButtonPressed) {
+                      if (appData.toolSelected == "pencil") {
+                        appData.newShape.addPoint(event.localPosition.dx,
+                            event.localPosition.dy);
+                      }
+                    }
                   },
                   onPointerUp: (event) {
                     _isMouseButtonPressed = false;
+                    addData.shapesList.add(appData.newShape);
+                    appData.newShape = UtilShape();
                   },
                   onPointerSignal: (pointerSignal) {
                     if (pointerSignal is PointerScrollEvent) {

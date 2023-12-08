@@ -1,17 +1,20 @@
-class Shape {
-  MutableOffset position;
-  MutableSize scale;
-  double rotation;
-  List<MutableOffset> points;
+import 'util_mutable_offset.dart';
+import 'util_mutable_size.dart';
 
-  MutableSize(this.position = MutableOffset(0, 0), this.scale = MutableSize(1, 1), this.rotation = 0, this.points = []);
+class Shape {
+  MutableOffset position = MutableOffset(0, 0);
+  MutableSize scale = MutableSize(1, 1);
+  double rotation = 0;
+  List<MutableOffset> points = [];
+
+  Shape();
 
   void setPosition(double x, double y) {
     position.dx = x;
     position.dy = y;
   }
 
-  void setScale(double width, double y) {
+  void setScale(double width, double height) {
     scale.width = width;
     scale.height = height;
   }
@@ -23,5 +26,4 @@ class Shape {
   void addPoint(double x, double y) {
     points.add(MutableOffset(x, y));
   }
-
 }

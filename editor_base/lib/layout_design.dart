@@ -76,93 +76,94 @@ class LayoutDesignState extends State<LayoutDesign> {
       return Stack(
         children: [
           RawKeyboardListener(
-            focusNode: _focusNode,
-            onKey: (event) {
-              if (event is RawKeyDownEvent) {
-                if (event.logicalKey == LogicalKeyboardKey.altLeft) {
-                  _isAltOptionKeyPressed = true;
-                }
-              } else if (event is RawKeyUpEvent) {
-                if (event.logicalKey == LogicalKeyboardKey.altLeft) {
-                  _isAltOptionKeyPressed = false;
-                }
-              }
-            },
-            child: GestureDetector(
-              onPanEnd: (details) {
-                _keyScrollX.currentState!.startInertiaAnimation();
-                _keyScrollY.currentState!.startInertiaAnimation();
-              },
-              onPanUpdate: (DragUpdateDetails details) {
-                if (!_isMouseButtonPressed) {
-                  if (_isAltOptionKeyPressed) {
-                    appData.setZoom(appData.zoom + details.delta.dy);
-                  } else {
-                    if (details.delta.dy != 0) {
-                        _keyScrollY.currentState!
-                          .setTrackpadDelta(details.delta.dy);
-                    }
-                    if (details.delta.dx != 0) {
-                        _keyScrollX.currentState!
-                          .setTrackpadDelta(details.delta.dx);
-                    }
+              focusNode: _focusNode,
+              onKey: (event) {
+                if (event is RawKeyDownEvent) {
+                  if (event.logicalKey == LogicalKeyboardKey.altLeft) {
+                    _isAltOptionKeyPressed = true;
+                  }
+                } else if (event is RawKeyUpEvent) {
+                  if (event.logicalKey == LogicalKeyboardKey.altLeft) {
+                    _isAltOptionKeyPressed = false;
                   }
                 }
               },
-              child: Listener(
-                  onPointerDown: (event) {
-                    _focusNode.requestFocus();
-                    _isMouseButtonPressed = true;
-                    if (appData.toolSelected == "pencil") {
-                      appData.newShape = UtilShape();
-                      appData.newShape.setPosition(event.localPosition.dx,
-                          event.localPosition.dy);
-                        /*
+              child: GestureDetector(
+                  onPanEnd: (details) {
+                    _keyScrollX.currentState!.startInertiaAnimation();
+                    _keyScrollY.currentState!.startInertiaAnimation();
+                  },
+                  onPanUpdate: (DragUpdateDetails details) {
+                    if (!_isMouseButtonPressed) {
+                      if (_isAltOptionKeyPressed) {
+                        appData.setZoom(appData.zoom + details.delta.dy);
+                      } else {
+                        if (details.delta.dy != 0) {
+                          _keyScrollY.currentState!
+                              .setTrackpadDelta(details.delta.dy);
+                        }
+                        if (details.delta.dx != 0) {
+                          _keyScrollX.currentState!
+                              .setTrackpadDelta(details.delta.dx);
+                        }
+                      }
+                    }
+                  },
+                  child: Listener(
+                      onPointerDown: (event) {
+                        _focusNode.requestFocus();
+                        _isMouseButtonPressed = true;
+                        if (appData.toolSelected == "pencil") {
+                          appData.newShape = Shape();
+                          appData.newShape.setPosition(
+                              event.localPosition.dx, event.localPosition.dy);
+                          /*
                           (event.localPosition.dx - scrollDisplacement.dx) *
                               100 /
                               appData.zoom,
                           (event.localPosition.dy - scrollDisplacement.dy) *
                               100 /
                               appData.zoom);*/
-                    }
-                  },
-                  onPointerMove: (event) {
-                    if (_isMouseButtonPressed) {
-                      if (appData.toolSelected == "pencil") {
-                        appData.newShape.addPoint(event.localPosition.dx,
-                            event.localPosition.dy);
-                      }
-                    }
-                  },
-                  onPointerUp: (event) {
-                    _isMouseButtonPressed = false;
-                    addData.shapesList.add(appData.newShape);
-                    appData.newShape = UtilShape();
-                  },
-                  onPointerSignal: (pointerSignal) {
-                    if (pointerSignal is PointerScrollEvent) {
-                      if (!_isMouseButtonPressed) {
-                        if (_isAltOptionKeyPressed) {
-                          appData.setZoom(appData.zoom + pointerSignal.scrollDelta.dy);
-                        } else {
-                          _keyScrollX.currentState!
-                              .setWheelDelta(pointerSignal.scrollDelta.dx);
-                          _keyScrollY.currentState!
-                              .setWheelDelta(pointerSignal.scrollDelta.dy);
                         }
-                      }
-                    }
-                  },
-                  child: CustomPaint(
-                    painter: LayoutDesignPainter(
-                      appData: appData,
-                      theme: theme,
-                      zoom: appData.zoom,
-                      centerX: scrollCenter.dx,
-                      centerY: scrollCenter.dy,
-                    ),
-                    size: Size(constraints.maxWidth, constraints.maxHeight),
-                )))),
+                      },
+                      onPointerMove: (event) {
+                        if (_isMouseButtonPressed) {
+                          if (appData.toolSelected == "pencil") {
+                            appData.newShape.addPoint(
+                                event.localPosition.dx, event.localPosition.dy);
+                          }
+                        }
+                      },
+                      onPointerUp: (event) {
+                        _isMouseButtonPressed = false;
+                        appData.shapesList.add(appData.newShape);
+                        appData.newShape = Shape();
+                      },
+                      onPointerSignal: (pointerSignal) {
+                        if (pointerSignal is PointerScrollEvent) {
+                          if (!_isMouseButtonPressed) {
+                            if (_isAltOptionKeyPressed) {
+                              appData.setZoom(
+                                  appData.zoom + pointerSignal.scrollDelta.dy);
+                            } else {
+                              _keyScrollX.currentState!
+                                  .setWheelDelta(pointerSignal.scrollDelta.dx);
+                              _keyScrollY.currentState!
+                                  .setWheelDelta(pointerSignal.scrollDelta.dy);
+                            }
+                          }
+                        }
+                      },
+                      child: CustomPaint(
+                        painter: LayoutDesignPainter(
+                          appData: appData,
+                          theme: theme,
+                          zoom: appData.zoom,
+                          centerX: scrollCenter.dx,
+                          centerY: scrollCenter.dy,
+                        ),
+                        size: Size(constraints.maxWidth, constraints.maxHeight),
+                      )))),
           UtilCustomScrollHorizontal(
             key: _keyScrollX,
             size: constraints.maxWidth,

@@ -217,22 +217,6 @@ class LayoutDesignPainter extends CustomPainter {
       canvas.drawPath(path, paint);
     }
 
-    // Dibuixa una diagonal vermella a tot el document
-    Paint paintLine0 = Paint();
-    paintLine0.color = CDKTheme.red;
-    canvas.drawLine(
-        const Offset(0, 1), Offset(docW, 1), paintLine0..strokeWidth = 1);
-
-    Paint paintLine1 = Paint();
-    paintLine1.color = CDKTheme.blue;
-    canvas.drawLine(
-        const Offset(0, 1), Offset(docW, docH), paintLine1..strokeWidth = 1);
-
-    Paint paintLine2 = Paint();
-    paintLine2.color = CDKTheme.green;
-    canvas.drawLine(Offset(0, docH - 1), Offset(docW, docH - 1),
-        paintLine2..strokeWidth = 1);
-
     // Restaura l'estat previ a l'escalat i translació
     canvas.restore();
 

@@ -8,6 +8,7 @@ class AppData with ChangeNotifier {
 
   double zoom = 100;
   MutableSize docSize = MutableSize(500, 400);
+  String toolSelected = "pencil";
 
   bool readyExample = false;
   late dynamic dataExample;
@@ -50,6 +51,11 @@ class AppData with ChangeNotifier {
 
   void setDocHeight (double value) {
     docSize.height = value;
+    notifyListeners();
+  }
+
+  void setToolSelected (String name) {
+    toolSelected = name;
     notifyListeners();
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -21,8 +19,6 @@ class LayoutDesign extends StatefulWidget {
 class LayoutDesignState extends State<LayoutDesign> {
   final GlobalKey<UtilCustomScrollHorizontalState> _keyScrollX = GlobalKey();
   final GlobalKey<UtilCustomScrollVerticalState> _keyScrollY = GlobalKey();
-  bool _shadersReady = false;
-  ui.ImageShader? _shaderGrid;
   bool _isMouseButtonPressed = false;
   bool _isAltOptionKeyPressed = false;
   final FocusNode _focusNode = FocusNode();
@@ -34,34 +30,7 @@ class LayoutDesignState extends State<LayoutDesign> {
   }
 
   Future<void> initShaders() async {
-    const double size = 5.0;
-    ui.PictureRecorder recorder = ui.PictureRecorder();
-    Canvas imageCanvas = Canvas(recorder);
-    final paint = Paint()..color = CDKTheme.white;
-    imageCanvas.drawRect(const Rect.fromLTWH(0, 0, size, size), paint);
-    imageCanvas.drawRect(const Rect.fromLTWH(size, size, size, size), paint);
-    paint.color = CDKTheme.grey100;
-    imageCanvas.drawRect(const Rect.fromLTWH(size, 0, size, size), paint);
-    imageCanvas.drawRect(const Rect.fromLTWH(0, size, size, size), paint);
-    int s = (size * 2).toInt();
-    int matSize = 4;
-    List<List<double>> matIdent =
-        List.generate(matSize, (_) => List.filled(matSize, 0.0));
-    for (int i = 0; i < matSize; i++) {
-      matIdent[i][i] = 1.0;
-    }
-    List<double> vecIdent = [];
-    for (int i = 0; i < matSize; i++) {
-      vecIdent.addAll(matIdent[i]);
-    }
-    ui.Image? gridImage = await recorder.endRecording().toImage(s, s);
-    _shaderGrid = ui.ImageShader(
-      gridImage,
-      TileMode.repeated,
-      TileMode.repeated,
-      Float64List.fromList(vecIdent),
-    );
-    _shadersReady = true;
+    await LayoutDesignPainter.initShaders();
     setState(() {});
   }
 
@@ -77,8 +46,6 @@ class LayoutDesignState extends State<LayoutDesign> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_shadersReady) return Container();
-
     return LayoutBuilder(builder: (context, constraints) {
       AppData appData = Provider.of<AppData>(context);
       CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
@@ -168,7 +135,6 @@ class LayoutDesignState extends State<LayoutDesign> {
                       appData: appData,
                       theme: theme,
                       zoom: appData.zoom,
-                      shaderGrid: _shaderGrid,
                       centerX: scrollCenter.dx,
                       centerY: scrollCenter.dy,
                     ),

@@ -2,16 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
 import 'package:provider/provider.dart';
 import 'app_data.dart';
+import 'layout_sidebar_tools.dart';
 import 'util_tab_views.dart';
 
-class LayoutSidebarRight extends StatefulWidget {
+class LayoutSidebarRight extends StatelessWidget {
   const LayoutSidebarRight({super.key});
 
-  @override
-  State<LayoutSidebarRight> createState() => LayoutButtonsState();
-}
-
-class LayoutButtonsState extends State<LayoutSidebarRight> {
   @override
   Widget build(BuildContext context) {
     AppData appData = Provider.of<AppData>(context);
@@ -83,20 +79,16 @@ class LayoutButtonsState extends State<LayoutSidebarRight> {
                 ),
                 SizedBox(
                   width: double.infinity, // Estira el widget horitzontalment
-                  child: Row(children: [
-                    const Column(children: [
-                      Icon(CupertinoIcons.pencil)
-                    ]),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    const LayoutSidebarTools(),
                     Container(
                     padding: const EdgeInsets.all(4.0),
                     child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Text 1'),
-                        Text('Text 2'),
-                        Text('Text 3'),
-                        Text('Text 4'),
-                        Text('Text 5'),
+                        Text('Tool widgets'),
                       ],
                     )),
                   ]),
@@ -108,32 +100,32 @@ class LayoutButtonsState extends State<LayoutSidebarRight> {
                     padding: const EdgeInsets.all(4.0),
                     child: const Column(
                       children: [
-                        Text('Text A'),
-                        Text('Text B'),
-                        Text('Text C'),
-                        Text('Text D'),
-                        Text('Text E'),
-                        Text('Text F'),
-                        Text('Text C'),
-                        Text('Text D'),
-                        Text('Text E'),
-                        Text('Text F'),
-                        Text('Text C'),
-                        Text('Text D'),
-                        Text('Text E'),
-                        Text('Text F'),
-                        Text('Text C'),
-                        Text('Text D'),
-                        Text('Text E'),
-                        Text('Text F'),
-                        Text('Text C'),
-                        Text('Text D'),
-                        Text('Text E'),
-                        Text('Text F'),
-                        Text('Text C'),
-                        Text('Text D'),
-                        Text('Text E'),
-                        Text('Text F'),
+                        Text('Layer A'),
+                        Text('Layer B'),
+                        Text('Layer C'),
+                        Text('Layer D'),
+                        Text('Layer E'),
+                        Text('Layer F'),
+                        Text('Layer C'),
+                        Text('Layer D'),
+                        Text('Layer E'),
+                        Text('Layer F'),
+                        Text('Layer C'),
+                        Text('Layer D'),
+                        Text('Layer E'),
+                        Text('Layer F'),
+                        Text('Layer C'),
+                        Text('Layer D'),
+                        Text('Layer E'),
+                        Text('Layer F'),
+                        Text('Layer C'),
+                        Text('Layer D'),
+                        Text('Layer E'),
+                        Text('Layer F'),
+                        Text('Layer C'),
+                        Text('Layer D'),
+                        Text('Layer E'),
+                        Text('Layer F'),
                       ],
                     ),
                   ),

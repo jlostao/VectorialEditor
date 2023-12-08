@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
@@ -6,19 +7,53 @@ import 'app_data.dart';
 class LayoutDesignPainter extends CustomPainter {
   final AppData appData;
   final CDKTheme theme;
-  final ui.Shader? shaderGrid;
   final double zoom;
   final double centerX;
   final double centerY;
+  static bool _shadersReady = false;
+  static ui.Shader? _shaderGrid;
 
   LayoutDesignPainter({
     required this.appData,
     required this.theme,
-    this.shaderGrid,
     required this.zoom,
     this.centerX = 0,
     this.centerY = 0,
   });
+
+  static Future<void> initShaders() async {
+    const double size = 5.0;
+
+    // White and grey grid
+    ui.PictureRecorder recorder = ui.PictureRecorder();
+    Canvas imageCanvas = Canvas(recorder);
+    final paint = Paint()..color = CDKTheme.white;
+    imageCanvas.drawRect(const Rect.fromLTWH(0, 0, size, size), paint);
+    imageCanvas.drawRect(const Rect.fromLTWH(size, size, size, size), paint);
+    paint.color = CDKTheme.grey100;
+    imageCanvas.drawRect(const Rect.fromLTWH(size, 0, size, size), paint);
+    imageCanvas.drawRect(const Rect.fromLTWH(0, size, size, size), paint);
+    int s = (size * 2).toInt();
+    int matSize = 4;
+    List<List<double>> matIdent =
+        List.generate(matSize, (_) => List.filled(matSize, 0.0));
+    for (int i = 0; i < matSize; i++) {
+      matIdent[i][i] = 1.0;
+    }
+    List<double> vecIdent = [];
+    for (int i = 0; i < matSize; i++) {
+      vecIdent.addAll(matIdent[i]);
+    }
+    ui.Image? gridImage = await recorder.endRecording().toImage(s, s);
+      _shaderGrid = ui.ImageShader(
+      gridImage,
+      TileMode.repeated,
+      TileMode.repeated,
+      Float64List.fromList(vecIdent),
+    );
+
+    _shadersReady = true;
+  }
 
   void drawRulers(Canvas canvas,CDKTheme theme, Size size, Size docSize, double scale, double translateX, double translateY) {
     Rect rectRullerTop = Rect.fromLTWH(0, 0, size.width, 20);
@@ -144,9 +179,11 @@ class LayoutDesignPainter extends CustomPainter {
     double docW = docSize.width;
     double docH = docSize.height;
 
-    Paint paint = Paint();
-    paint.shader = shaderGrid;
-    canvas.drawRect(Rect.fromLTWH(0, 0, docW, docH), paint);
+    if (_shadersReady) {
+      Paint paint = Paint();
+      paint.shader = _shaderGrid;
+      canvas.drawRect(Rect.fromLTWH(0, 0, docW, docH), paint);
+    }  
 
     // Dibuixa una diagonal vermella a tot el document
     Paint paintLine0 = Paint();
@@ -177,7 +214,6 @@ class LayoutDesignPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant LayoutDesignPainter oldDelegate) {
     return oldDelegate.appData != appData ||
-        oldDelegate.zoom != zoom ||
-        oldDelegate.shaderGrid != shaderGrid;
-  }
+        oldDelegate.zoom != zoom;
+    }
 }

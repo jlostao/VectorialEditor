@@ -32,7 +32,7 @@ class LayoutSidebarRight extends StatelessWidget {
               child: UtilTabViews(isAccent: true, options: const [
                 Text('Document'),
                 Text('Format'),
-                Text('Layers')
+                Text('Shapes')
               ], views: [
                 SizedBox(
                   width: double.infinity, // Estira el widget horitzontalment
@@ -103,32 +103,7 @@ class LayoutSidebarRight extends StatelessWidget {
                     padding: const EdgeInsets.all(4.0),
                     child: const Column(
                       children: [
-                        Text('Layer A'),
-                        Text('Layer B'),
-                        Text('Layer C'),
-                        Text('Layer D'),
-                        Text('Layer E'),
-                        Text('Layer F'),
-                        Text('Layer C'),
-                        Text('Layer D'),
-                        Text('Layer E'),
-                        Text('Layer F'),
-                        Text('Layer C'),
-                        Text('Layer D'),
-                        Text('Layer E'),
-                        Text('Layer F'),
-                        Text('Layer C'),
-                        Text('Layer D'),
-                        Text('Layer E'),
-                        Text('Layer F'),
-                        Text('Layer C'),
-                        Text('Layer D'),
-                        Text('Layer E'),
-                        Text('Layer F'),
-                        Text('Layer C'),
-                        Text('Layer D'),
-                        Text('Layer E'),
-                        Text('Layer F'),
+                        Text('List of shapes'),
                       ],
                     ),
                   ),

@@ -15,21 +15,21 @@ class LayoutSidebarTools extends StatelessWidget {
     Color colorSelected = theme.colorText;
     Color colorUnselected = theme.isLight
         ? const Color.fromARGB(255, 15, 15, 15)
-        : const Color.fromARGB(255, 250, 250, 250);
+        : const Color.fromARGB(255, 250, 0, 0);
 
     return Column(children: [
       Container(
         padding: const EdgeInsets.only(top: 2, left: 2),
         child: UtilButtonIcon(
           size: 24,
-          isSelected: appData.toolSelected == "pointer",
+          isSelected: appData.toolSelected == "pointer_shapes",
           onPressed: () {
-            appData.setToolSelected("pointer");
+            appData.setToolSelected("pointer_shapes");
           },
           child: Opacity(
-            opacity: appData.toolSelected == "pointer" ? 1.0 : 0.5,
-            child: Image.asset('assets/images/arrow_pointer.png',
-                color: appData.toolSelected == "pointer"
+            opacity: appData.toolSelected == "pointer_shapes" ? 1.0 : 0.5,
+            child: Image.asset('assets/images/pointer_shapes.png',
+                color: appData.toolSelected == "pointer_shapes"
                     ? colorSelected
                     : colorUnselected,
                 width: 18,
@@ -41,17 +41,18 @@ class LayoutSidebarTools extends StatelessWidget {
         padding: const EdgeInsets.only(top: 2, left: 2),
         child: UtilButtonIcon(
           size: 24,
-          isSelected: appData.toolSelected == "pencil",
+          isSelected: appData.toolSelected == "shape_drawing",
           onPressed: () {
-            appData.setToolSelected("pencil");
+            appData.setToolSelected("shape_drawing");
           },
           child: Opacity(
-            opacity: appData.toolSelected == "pencil" ? 1.0 : 0.5,
-            child: Icon(Icons.edit,
-                color: appData.toolSelected == "pencil"
+            opacity: appData.toolSelected == "shape_drawing" ? 1.0 : 0.5,
+            child: Image.asset('assets/images/shape_drawing.png',
+                color: appData.toolSelected == "shape_drawing"
                     ? colorSelected
                     : colorUnselected,
-                size: 18),
+                width: 18,
+                height: 18),
           ),
         ),
       ),

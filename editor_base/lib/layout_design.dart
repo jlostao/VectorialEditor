@@ -135,7 +135,7 @@ class LayoutDesignState extends State<LayoutDesign> {
                       onPointerDown: (event) {
                         _focusNode.requestFocus();
                         _isMouseButtonPressed = true;
-                        if (appData.toolSelected == "pencil") {
+                        if (appData.toolSelected == "shape_drawing") {
                           Size docSize = Size(
                               appData.docSize.width, appData.docSize.height);
                           appData.addNewShape(_getDocPosition(
@@ -151,7 +151,7 @@ class LayoutDesignState extends State<LayoutDesign> {
                       },
                       onPointerMove: (event) {
                         if (_isMouseButtonPressed) {
-                          if (appData.toolSelected == "pencil") {
+                          if (appData.toolSelected == "shape_drawing") {
                             Size docSize = Size(
                                 appData.docSize.width, appData.docSize.height);
                             appData.addPointToNewShape(_getDocPosition(
@@ -168,7 +168,7 @@ class LayoutDesignState extends State<LayoutDesign> {
                       },
                       onPointerUp: (event) {
                         _isMouseButtonPressed = false;
-                        if (appData.toolSelected == "pencil") {
+                        if (appData.toolSelected == "shape_drawing") {
                           appData.addNewShapeToShapesList();
                         }
                       },

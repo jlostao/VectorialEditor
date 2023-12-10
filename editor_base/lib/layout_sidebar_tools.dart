@@ -36,8 +36,12 @@ class LayoutSidebarTools extends StatelessWidget {
               onPressed: () {
                 appData.setToolSelected(tool);
               },
-              child: SvgPicture.asset('assets/images/$tool.svg',
-                  colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn))),
+              child: SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: SvgPicture.asset('assets/images/$tool.svg',
+                      colorFilter:
+                          ColorFilter.mode(iconColor, BlendMode.srcIn)))),
         );
       }).toList(),
     );

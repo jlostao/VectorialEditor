@@ -187,7 +187,7 @@ class LayoutDesignPainter extends CustomPainter {
       canvas.drawRect(Rect.fromLTWH(0, 0, docW, docH), paint);
     }
 
-    // Dibuixa la llista de poligons (segons correspon)
+    // Dibuixa la llista de poligons (segons correspon, relatiu a la seva posició)
     if (appData.shapesList.isNotEmpty) {
       for (int i = 0; i < appData.shapesList.length; i++) {
         Paint paint = Paint();
@@ -208,7 +208,7 @@ class LayoutDesignPainter extends CustomPainter {
       }
     }
 
-    // Dibuixa el poligon que s'està afegint
+    // Dibuixa el poligon que s'està afegint (relatiu a la seva posició)
     if (appData.newShape.points.isNotEmpty) {
       Paint paint = Paint();
       paint.color = theme.colorText;

@@ -48,7 +48,7 @@ class LayoutDesignState extends State<LayoutDesign> {
   }
 
   // Retorna la posició x,y al document, respecte on s'ha fet click
-  Offset _getDocPosition(
+  MutableOffset _getDocPosition(
       Offset position,
       double zoom,
       double sizeWidth,
@@ -65,7 +65,7 @@ class LayoutDesignState extends State<LayoutDesign> {
     double originalX = (position.dx / scale) - translateX;
     double originalY = (position.dy / scale) - translateY;
 
-    return Offset(originalX, originalY);
+    return MutableOffset(originalX, originalY);
   }
 
   @override
@@ -154,7 +154,7 @@ class LayoutDesignState extends State<LayoutDesign> {
                           if (appData.toolSelected == "shape_drawing") {
                             Size docSize = Size(
                                 appData.docSize.width, appData.docSize.height);
-                            appData.addPointToNewShape(_getDocPosition(
+                            appData.addRelativePointToNewShape(_getDocPosition(
                                 event.localPosition,
                                 appData.zoom,
                                 constraints.maxWidth,

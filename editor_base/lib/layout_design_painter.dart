@@ -190,15 +190,19 @@ class LayoutDesignPainter extends CustomPainter {
     // Dibuixa la llista de poligons (segons correspon)
     if (appData.shapesList.isNotEmpty) {
       for (int i = 0; i < appData.shapesList.length; i++) {
-        Shape shape = appData.shapesList[i];
         Paint paint = Paint();
         paint.color = theme.colorText;
         paint.style = PaintingStyle.stroke;
         paint.strokeWidth = 1;
+        Shape shape = appData.shapesList[i];
+        double x = shape.position.dx + shape.points[0].dx;
+        double y = shape.position.dy + shape.points[0].dy;
         Path path = Path();
-        path.moveTo(shape.points[0].dx, shape.points[0].dy);
+        path.moveTo(x, y);
         for (int i = 1; i < shape.points.length; i++) {
-          path.lineTo(shape.points[i].dx, shape.points[i].dy);
+          x = shape.position.dx + shape.points[i].dx;
+          y = shape.position.dy + shape.points[i].dy;
+          path.lineTo(x, y);
         }
         canvas.drawPath(path, paint);
       }
@@ -210,11 +214,15 @@ class LayoutDesignPainter extends CustomPainter {
       paint.color = theme.colorText;
       paint.style = PaintingStyle.stroke;
       paint.strokeWidth = 1;
+      Shape shape = appData.newShape;
+      double x = shape.position.dx + appData.newShape.points[0].dx;
+      double y = shape.position.dy + appData.newShape.points[0].dy;
       Path path = Path();
-      path.moveTo(appData.newShape.points[0].dx, appData.newShape.points[0].dy);
+      path.moveTo(x, y);
       for (int i = 1; i < appData.newShape.points.length; i++) {
-        path.lineTo(
-            appData.newShape.points[i].dx, appData.newShape.points[i].dy);
+        x = shape.position.dx + shape.points[i].dx;
+        y = shape.position.dy + shape.points[i].dy;
+        path.lineTo(x, y);
       }
       canvas.drawPath(path, paint);
     }

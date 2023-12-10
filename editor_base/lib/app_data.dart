@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'util_mutable_offset.dart';
 import 'util_mutable_size.dart';
 import 'util_shape.dart';
 
@@ -62,14 +63,15 @@ class AppData with ChangeNotifier {
     notifyListeners();
   }
 
-  void addNewShape(Offset position) {
+  void addNewShape(MutableOffset position) {
     newShape = Shape();
     newShape.setPosition(position);
+    newShape.addPoint(MutableOffset(0, 0));
     notifyListeners();
   }
 
-  void addPointToNewShape(Offset point) {
-    newShape.addPoint(point);
+  void addRelativePointToNewShape(MutableOffset point) {
+    newShape.addRelativePoint(point);
     notifyListeners();
   }
 

@@ -10,7 +10,7 @@ class Shape {
 
   Shape();
 
-  void setPosition(Offset newPosition) {
+  void setPosition(MutableOffset newPosition) {
     position.dx = newPosition.dx;
     position.dy = newPosition.dy;
   }
@@ -24,7 +24,11 @@ class Shape {
     rotation = newRotation;
   }
 
-  void addPoint(Offset point) {
+  void addPoint(MutableOffset point) {
     points.add(MutableOffset(point.dx, point.dy));
+  }
+
+  void addRelativePoint(MutableOffset point) {
+    points.add(MutableOffset(point.dx - position.dx, point.dy - position.dy));
   }
 }

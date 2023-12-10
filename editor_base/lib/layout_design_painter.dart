@@ -24,6 +24,16 @@ class LayoutDesignPainter extends CustomPainter {
 
   static Future<void> initShaders() async {
     const double size = 5.0;
+    int matSize = 4;
+    List<List<double>> matIdent =
+        List.generate(matSize, (_) => List.filled(matSize, 0.0));
+    for (int i = 0; i < matSize; i++) {
+      matIdent[i][i] = 1.0;
+    }
+    List<double> vecIdent = [];
+    for (int i = 0; i < matSize; i++) {
+      vecIdent.addAll(matIdent[i]);
+    }
 
     // White and grey grid
     ui.PictureRecorder recorder = ui.PictureRecorder();
@@ -35,16 +45,6 @@ class LayoutDesignPainter extends CustomPainter {
     imageCanvas.drawRect(const Rect.fromLTWH(size, 0, size, size), paint);
     imageCanvas.drawRect(const Rect.fromLTWH(0, size, size, size), paint);
     int s = (size * 2).toInt();
-    int matSize = 4;
-    List<List<double>> matIdent =
-        List.generate(matSize, (_) => List.filled(matSize, 0.0));
-    for (int i = 0; i < matSize; i++) {
-      matIdent[i][i] = 1.0;
-    }
-    List<double> vecIdent = [];
-    for (int i = 0; i < matSize; i++) {
-      vecIdent.addAll(matIdent[i]);
-    }
     ui.Image? gridImage = await recorder.endRecording().toImage(s, s);
     _shaderGrid = ui.ImageShader(
       gridImage,
@@ -63,6 +63,7 @@ class LayoutDesignPainter extends CustomPainter {
     paintRulerTop.color = theme.backgroundSecondary1;
     canvas.drawRect(rectRullerTop, paintRulerTop);
 
+    // Horizontal ruler
     double xLeft = (0 + translateX) * scale;
     double xRight = ((docSize.width + translateX) * scale) - 1;
 
@@ -105,6 +106,7 @@ class LayoutDesignPainter extends CustomPainter {
     paintRulerLeft.color = theme.backgroundSecondary1;
     canvas.drawRect(rectRullerLeft, paintRulerLeft);
 
+    // Vertical ruler
     double yTop = (0 + translateY) * scale;
     double yBottom = ((docSize.height + translateY) * scale) - 1;
 

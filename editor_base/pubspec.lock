@@ -74,10 +74,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_cupertino_desktop_kit
-      sha256: f64eb39ed7adad1c350a613f714d2e06eae0e8a3bc42d9b50562726f0a0ebca4
+      sha256: aa1229f2b6efd27f5a79789198a74688682b5a33f194497933bb29a38dcaed06
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.8"
+    version: "0.0.9"
   flutter_lints:
     dependency: "direct dev"
     description:

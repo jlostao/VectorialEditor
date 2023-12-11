@@ -74,7 +74,6 @@ class LayoutDesignPainter extends CustomPainter {
         double top = 15;
         if ((cnt % 100) == 0) {
           top = 0;
-
           TextSpan span = TextSpan(
             style: TextStyle(color: theme.colorText, fontSize: 10),
             text: '$cnt',

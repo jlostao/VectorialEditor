@@ -13,10 +13,7 @@ class LayoutSidebarTools extends StatelessWidget {
     AppData appData = Provider.of<AppData>(context);
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
 
-    List<String> tools = [
-      "pointer_shapes",
-      "shape_drawing",
-    ];
+    List<String> tools = ["pointer_shapes", "shape_drawing", "view_grab"];
 
     return Column(
       children: tools.map((tool) {

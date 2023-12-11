@@ -77,7 +77,8 @@ class LayoutSidebarRight extends StatelessWidget {
                                     },
                                   ))
                             ],
-                          )
+                          ),
+                          const SizedBox(height: 16),
                         ]),
                   ),
                 ),
@@ -87,14 +88,9 @@ class LayoutSidebarRight extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const LayoutSidebarTools(),
-                        Container(
-                            padding: const EdgeInsets.all(4.0),
-                            child: const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Tool widgets'),
-                              ],
-                            )),
+                        Expanded(
+                          child: Container(),
+                        )
                       ]),
                 ),
                 SizedBox(

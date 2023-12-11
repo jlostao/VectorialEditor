@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'util_mutable_offset.dart';
-import 'util_mutable_size.dart';
 import 'util_shape.dart';
 
 class AppData with ChangeNotifier {
@@ -9,7 +7,7 @@ class AppData with ChangeNotifier {
   // AppData appData = Provider.of<AppData>(context, listen: false)
 
   double zoom = 100;
-  MutableSize docSize = MutableSize(500, 400);
+  Size docSize = const Size(500, 400);
   String toolSelected = "shape_drawing";
   Shape newShape = Shape();
   List<Shape> shapesList = [];
@@ -49,12 +47,12 @@ class AppData with ChangeNotifier {
   }
 
   void setDocWidth(double value) {
-    docSize.width = value;
+    docSize = Size(value, docSize.height);
     notifyListeners();
   }
 
   void setDocHeight(double value) {
-    docSize.height = value;
+    docSize = Size(docSize.width, value);
     notifyListeners();
   }
 
@@ -63,14 +61,14 @@ class AppData with ChangeNotifier {
     notifyListeners();
   }
 
-  void addNewShape(MutableOffset position) {
+  void addNewShape(Offset position) {
     newShape = Shape();
     newShape.setPosition(position);
-    newShape.addPoint(MutableOffset(0, 0));
+    newShape.addPoint(Offset(0, 0));
     notifyListeners();
   }
 
-  void addRelativePointToNewShape(MutableOffset point) {
+  void addRelativePointToNewShape(Offset point) {
     newShape.addRelativePoint(point);
     notifyListeners();
   }

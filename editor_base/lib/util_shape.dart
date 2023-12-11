@@ -1,34 +1,30 @@
 import 'package:flutter/cupertino.dart';
-import 'util_mutable_offset.dart';
-import 'util_mutable_size.dart';
 
 class Shape {
-  MutableOffset position = MutableOffset(0, 0);
-  MutableSize scale = MutableSize(1, 1);
+  Offset position = const Offset(0, 0);
+  Size scale = const Size(1, 1);
   double rotation = 0;
-  List<MutableOffset> points = [];
+  List<Offset> points = [];
 
   Shape();
 
-  void setPosition(MutableOffset newPosition) {
-    position.dx = newPosition.dx;
-    position.dy = newPosition.dy;
+  void setPosition(Offset newPosition) {
+    position = newPosition;
   }
 
   void setScale(Size newScale) {
-    scale.width = newScale.width;
-    scale.height = newScale.height;
+    scale = newScale;
   }
 
   void setRotation(double newRotation) {
     rotation = newRotation;
   }
 
-  void addPoint(MutableOffset point) {
-    points.add(MutableOffset(point.dx, point.dy));
+  void addPoint(Offset point) {
+    points.add(Offset(point.dx, point.dy));
   }
 
-  void addRelativePoint(MutableOffset point) {
-    points.add(MutableOffset(point.dx - position.dx, point.dy - position.dy));
+  void addRelativePoint(Offset point) {
+    points.add(Offset(point.dx - position.dx, point.dy - position.dy));
   }
 }

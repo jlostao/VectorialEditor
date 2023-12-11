@@ -7,7 +7,6 @@ import 'app_data.dart';
 import 'layout_design_painter.dart';
 import 'util_custom_scroll_vertical.dart';
 import 'util_custom_scroll_horizontal.dart';
-import 'util_mutable_offset.dart';
 
 class LayoutDesign extends StatefulWidget {
   const LayoutDesign({super.key});
@@ -19,7 +18,7 @@ class LayoutDesign extends StatefulWidget {
 class LayoutDesignState extends State<LayoutDesign> {
   final GlobalKey<UtilCustomScrollHorizontalState> _keyScrollX = GlobalKey();
   final GlobalKey<UtilCustomScrollVerticalState> _keyScrollY = GlobalKey();
-  final MutableOffset _scrollCenter = MutableOffset(0, 0);
+  Offset _scrollCenter = const Offset(0, 0);
   bool _isMouseButtonPressed = false;
   bool _isAltOptionKeyPressed = false;
   final FocusNode _focusNode = FocusNode();
@@ -48,7 +47,7 @@ class LayoutDesignState extends State<LayoutDesign> {
   }
 
   // Retorna la posició x,y al document, respecte on s'ha fet click
-  MutableOffset _getDocPosition(
+  Offset _getDocPosition(
       Offset position,
       double zoom,
       double sizeWidth,
@@ -65,7 +64,7 @@ class LayoutDesignState extends State<LayoutDesign> {
     double originalX = (position.dx / scale) - translateX;
     double originalY = (position.dy / scale) - translateY;
 
-    return MutableOffset(originalX, originalY);
+    return Offset(originalX, originalY);
   }
 
   @override
@@ -77,11 +76,13 @@ class LayoutDesignState extends State<LayoutDesign> {
       Size scrollArea = _getScrollArea(appData);
       Offset scrollDisplacement = _getDisplacement(scrollArea, constraints);
 
+      double tmpScrollX = _scrollCenter.dx;
+      double tmpScrollY = _scrollCenter.dy;
       if (_keyScrollX.currentState != null) {
         if (scrollArea.width < constraints.maxWidth) {
           _keyScrollX.currentState!.setOffset(0);
         } else {
-          _scrollCenter.dx = _keyScrollX.currentState!.getOffset() *
+          tmpScrollX = _keyScrollX.currentState!.getOffset() *
               (scrollDisplacement.dx * 100 / appData.zoom);
         }
       }
@@ -90,10 +91,12 @@ class LayoutDesignState extends State<LayoutDesign> {
         if (scrollArea.height < constraints.maxHeight) {
           _keyScrollY.currentState!.setOffset(0);
         } else {
-          _scrollCenter.dy = _keyScrollY.currentState!.getOffset() *
+          tmpScrollY = _keyScrollY.currentState!.getOffset() *
               (scrollDisplacement.dy * 100 / appData.zoom);
         }
       }
+
+      _scrollCenter = Offset(tmpScrollX, tmpScrollY);
 
       return Stack(
         children: [

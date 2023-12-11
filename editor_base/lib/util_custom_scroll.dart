@@ -50,13 +50,22 @@ abstract class BaseCustomScrollState<T extends BaseCustomScroll>
     return widget.size * relation;
   }
 
-  double getDeltaPixels(delta) {
+  double getScrollDelta(delta) {
     double draggerSize = getDraggerSize();
     double relation = 2 / (widget.size - draggerSize);
     double normalizedDelta = delta * relation;
-    double newOffset = 0;
+    double newOffset = offset + normalizedDelta;
+    newOffset = newOffset.clamp(-1.0, 1.0);
 
-    newOffset = offset + normalizedDelta;
+    return newOffset;
+  }
+
+  double getContentDelta(double delta) {
+    double draggerSize = getDraggerSize();
+    double scale = widget.size / widget.contentSize;
+    double relation = 2 / (widget.size - draggerSize);
+    double contentDelta = delta * scale * relation;
+    double newOffset = offset + contentDelta;
     newOffset = newOffset.clamp(-1.0, 1.0);
 
     return newOffset;
@@ -68,7 +77,7 @@ abstract class BaseCustomScrollState<T extends BaseCustomScroll>
     _inertiaAnimationController!.stop();
 
     double oldOffset = offset;
-    double newOffset = getDeltaPixels(-value);
+    double newOffset = getContentDelta(-value);
 
     double deltaTime = _inertiaAnimationController!
             .lastElapsedDuration?.inMilliseconds
@@ -127,7 +136,7 @@ abstract class BaseCustomScrollState<T extends BaseCustomScroll>
 
   void setWheelDelta(double value) {
     double oldOffset = offset;
-    double newOffset = getDeltaPixels(value);
+    double newOffset = getScrollDelta(value);
     if (oldOffset != newOffset) {
       setState(() {
         offset = newOffset;

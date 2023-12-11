@@ -123,14 +123,13 @@ class LayoutDesignState extends State<LayoutDesign> {
                       if (_isAltOptionKeyPressed) {
                         appData.setZoom(appData.zoom + details.delta.dy);
                       } else {
-                        double relation = 100 / appData.zoom;
                         if (details.delta.dx != 0) {
                           _keyScrollX.currentState!
-                              .setTrackpadDelta(details.delta.dx * relation);
+                              .setTrackpadDelta(details.delta.dx);
                         }
                         if (details.delta.dy != 0) {
                           _keyScrollY.currentState!
-                              .setTrackpadDelta(details.delta.dy * relation);
+                              .setTrackpadDelta(details.delta.dy);
                         }
                       }
                     }
@@ -179,14 +178,13 @@ class LayoutDesignState extends State<LayoutDesign> {
                             }
                             if (_isMouseButtonPressed &&
                                 appData.toolSelected == "view_grab") {
-                              double relation = 100 / appData.zoom;
                               if (event.delta.dx != 0) {
-                                _keyScrollX.currentState!.setTrackpadDelta(
-                                    event.delta.dx * relation);
+                                _keyScrollX.currentState!
+                                    .setTrackpadDelta(event.delta.dx);
                               }
                               if (event.delta.dy != 0) {
-                                _keyScrollY.currentState!.setTrackpadDelta(
-                                    event.delta.dy * relation);
+                                _keyScrollY.currentState!
+                                    .setTrackpadDelta(event.delta.dy);
                               }
                             }
                           },

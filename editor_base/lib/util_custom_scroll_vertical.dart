@@ -20,7 +20,7 @@ class UtilCustomScrollVerticalState
   @override
   void onDragUpdate(DragUpdateDetails details) {
     double oldOffset = offset;
-    double newOffset = getDeltaPixels(details.delta.dy);
+    double newOffset = getScrollDelta(details.delta.dy);
 
     GlobalKey key = widget.key as GlobalKey;
     final RenderBox renderBox =

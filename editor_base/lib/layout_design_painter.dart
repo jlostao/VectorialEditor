@@ -8,7 +8,6 @@ import 'util_shape.dart';
 class LayoutDesignPainter extends CustomPainter {
   final AppData appData;
   final CDKTheme theme;
-  final double zoom;
   final double centerX;
   final double centerY;
   static bool _shadersReady = false;
@@ -17,7 +16,6 @@ class LayoutDesignPainter extends CustomPainter {
   LayoutDesignPainter({
     required this.appData,
     required this.theme,
-    required this.zoom,
     this.centerX = 0,
     this.centerY = 0,
   });
@@ -167,7 +165,7 @@ class LayoutDesignPainter extends CustomPainter {
     canvas.save();
 
     // Calcula l'escalat basat en el zoom
-    double scale = zoom / 100;
+    double scale = appData.zoom / 100;
     Size scaledSize = Size(size.width / scale, size.height / scale);
     canvas.scale(scale, scale);
 
@@ -239,6 +237,9 @@ class LayoutDesignPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant LayoutDesignPainter oldDelegate) {
-    return oldDelegate.appData != appData || oldDelegate.zoom != zoom;
+    return oldDelegate.appData != appData ||
+        oldDelegate.theme != theme ||
+        oldDelegate.centerX != centerX ||
+        oldDelegate.centerY != centerY;
   }
 }

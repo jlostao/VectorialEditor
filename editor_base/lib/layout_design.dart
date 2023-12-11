@@ -191,7 +191,6 @@ class LayoutDesignState extends State<LayoutDesign> {
                         painter: LayoutDesignPainter(
                           appData: appData,
                           theme: theme,
-                          zoom: appData.zoom,
                           centerX: _scrollCenter.dx,
                           centerY: _scrollCenter.dy,
                         ),

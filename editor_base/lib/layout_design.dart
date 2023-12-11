@@ -38,6 +38,7 @@ class LayoutDesignState extends State<LayoutDesign> {
   Size _getScrollArea(AppData appData) {
     return Size(((appData.docSize.width * appData.zoom) / 100) + 50,
         ((appData.docSize.height * appData.zoom) / 100) + 50);
+    // Force 50 pixels padding (to show rulers)
   }
 
   // Retorna el desplacament del document respecte el centre de la pantalla

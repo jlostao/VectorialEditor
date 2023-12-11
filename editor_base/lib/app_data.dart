@@ -6,7 +6,7 @@ class AppData with ChangeNotifier {
   // AppData appData = Provider.of<AppData>(context);
   // AppData appData = Provider.of<AppData>(context, listen: false)
 
-  double zoom = 100;
+  double zoom = 95;
   Size docSize = const Size(500, 400);
   String toolSelected = "shape_drawing";
   Shape newShape = Shape();

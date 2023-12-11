@@ -36,14 +36,14 @@ class LayoutDesignState extends State<LayoutDesign> {
 
   // Retorna l'area de scroll del document
   Size _getScrollArea(AppData appData) {
-    return Size(((appData.docSize.width * appData.zoom) / 100),
-        ((appData.docSize.height * appData.zoom) / 100));
+    return Size(((appData.docSize.width * appData.zoom) / 100) + 50,
+        ((appData.docSize.height * appData.zoom) / 100) + 50);
   }
 
   // Retorna el desplacament del document respecte el centre de la pantalla
   Offset _getDisplacement(Size scrollArea, BoxConstraints constraints) {
-    return Offset(((scrollArea.width - constraints.maxWidth) / 2) + 25,
-        ((scrollArea.height - constraints.maxHeight) / 2) + 25);
+    return Offset(((scrollArea.width - constraints.maxWidth) / 2),
+        ((scrollArea.height - constraints.maxHeight) / 2));
   }
 
   // Retorna la posició x,y al document, respecte on s'ha fet click

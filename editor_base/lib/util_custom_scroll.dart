@@ -62,9 +62,9 @@ abstract class BaseCustomScrollState<T extends BaseCustomScroll>
 
   double getContentDelta(double delta) {
     double draggerSize = getDraggerSize();
-    double relation = 2 / (widget.size - draggerSize);
-    double normalizedDelta =
-        delta * relation * (widget.size / widget.contentSize);
+    double relationScroll = 2 / (widget.size - draggerSize);
+    double relationContent = widget.size / widget.contentSize;
+    double normalizedDelta = delta * relationScroll * relationContent;
     double newOffset = offset + normalizedDelta;
     newOffset = newOffset.clamp(-1.0, 1.0);
 

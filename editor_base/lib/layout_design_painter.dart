@@ -188,7 +188,7 @@ class LayoutDesignPainter extends CustomPainter {
     if (appData.shapesList.isNotEmpty) {
       for (int i = 0; i < appData.shapesList.length; i++) {
         Paint paint = Paint();
-        paint.color = theme.colorText;
+        paint.color = CDKTheme.black;
         paint.style = PaintingStyle.stroke;
         paint.strokeWidth = 1;
         Shape shape = appData.shapesList[i];
@@ -208,7 +208,7 @@ class LayoutDesignPainter extends CustomPainter {
     // Dibuixa el poligon que s'està afegint (relatiu a la seva posició)
     if (appData.newShape.points.isNotEmpty) {
       Paint paint = Paint();
-      paint.color = theme.colorText;
+      paint.color = CDKTheme.black;
       paint.style = PaintingStyle.stroke;
       paint.strokeWidth = 1;
       Shape shape = appData.newShape;

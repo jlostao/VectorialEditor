@@ -27,12 +27,6 @@ class LayoutSidebarTools extends StatelessWidget {
 
         return Container(
           padding: const EdgeInsets.only(top: 2, left: 2, right: 2),
-          decoration: BoxDecoration(
-              border: Border(
-                  right: BorderSide(
-                      color:
-                          theme.isLight ? CDKTheme.grey100 : CDKTheme.grey700,
-                      width: 1))),
           child: UtilButtonIcon(
               size: 28,
               isSelected: appData.toolSelected == tool,

@@ -27,7 +27,14 @@ class LayoutSidebar extends StatelessWidget {
                   child: Container(
                 padding: const EdgeInsets.only(top: 1.0),
                 height: screenHeight - 45,
-                color: backgroundColor,
+                decoration: BoxDecoration(
+                    color: backgroundColor,
+                    border: Border(
+                        left: BorderSide(
+                            color: theme.isLight
+                                ? CDKTheme.grey100
+                                : CDKTheme.grey700,
+                            width: 1))),
                 child: UtilTabViews(isAccent: true, options: const [
                   Text('Document'),
                   Text('Format'),

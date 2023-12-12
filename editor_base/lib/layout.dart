@@ -1,7 +1,7 @@
-import 'package:editor_base/app_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
 import 'package:provider/provider.dart';
+import 'app_data.dart';
 import 'layout_design.dart';
 import 'layout_sidebar.dart';
 

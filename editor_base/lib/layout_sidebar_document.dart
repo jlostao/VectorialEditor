@@ -79,7 +79,6 @@ class LayoutSidebarDocument extends StatelessWidget {
                         width: labelsWidth,
                         child: Text("Background color:", style: font)),
                     const SizedBox(width: 4),
-                    CDKButtonColor(color: CDKTheme.black, onPressed: () {}),
                   ],
                 ),
                 const SizedBox(height: 16),

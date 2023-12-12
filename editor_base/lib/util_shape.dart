@@ -4,7 +4,7 @@ class Shape {
   Offset position = const Offset(0, 0);
   Size scale = const Size(1, 1);
   double rotation = 0;
-  List<Offset> points = [];
+  List<Offset> vertices = [];
 
   Shape();
 
@@ -21,10 +21,10 @@ class Shape {
   }
 
   void addPoint(Offset point) {
-    points.add(Offset(point.dx, point.dy));
+    vertices.add(Offset(point.dx, point.dy));
   }
 
   void addRelativePoint(Offset point) {
-    points.add(Offset(point.dx - position.dx, point.dy - position.dy));
+    vertices.add(Offset(point.dx - position.dx, point.dy - position.dy));
   }
 }

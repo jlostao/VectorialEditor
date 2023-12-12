@@ -192,13 +192,13 @@ class LayoutDesignPainter extends CustomPainter {
         paint.style = PaintingStyle.stroke;
         paint.strokeWidth = 1;
         Shape shape = appData.shapesList[i];
-        double x = shape.position.dx + shape.points[0].dx;
-        double y = shape.position.dy + shape.points[0].dy;
+        double x = shape.position.dx + shape.vertices[0].dx;
+        double y = shape.position.dy + shape.vertices[0].dy;
         Path path = Path();
         path.moveTo(x, y);
-        for (int i = 1; i < shape.points.length; i++) {
-          x = shape.position.dx + shape.points[i].dx;
-          y = shape.position.dy + shape.points[i].dy;
+        for (int i = 1; i < shape.vertices.length; i++) {
+          x = shape.position.dx + shape.vertices[i].dx;
+          y = shape.position.dy + shape.vertices[i].dy;
           path.lineTo(x, y);
         }
         canvas.drawPath(path, paint);
@@ -206,19 +206,19 @@ class LayoutDesignPainter extends CustomPainter {
     }
 
     // Dibuixa el poligon que s'està afegint (relatiu a la seva posició)
-    if (appData.newShape.points.isNotEmpty) {
+    if (appData.newShape.vertices.isNotEmpty) {
       Paint paint = Paint();
       paint.color = CDKTheme.black;
       paint.style = PaintingStyle.stroke;
       paint.strokeWidth = 1;
       Shape shape = appData.newShape;
-      double x = shape.position.dx + appData.newShape.points[0].dx;
-      double y = shape.position.dy + appData.newShape.points[0].dy;
+      double x = shape.position.dx + appData.newShape.vertices[0].dx;
+      double y = shape.position.dy + appData.newShape.vertices[0].dy;
       Path path = Path();
       path.moveTo(x, y);
-      for (int i = 1; i < appData.newShape.points.length; i++) {
-        x = shape.position.dx + shape.points[i].dx;
-        y = shape.position.dy + shape.points[i].dy;
+      for (int i = 1; i < appData.newShape.vertices.length; i++) {
+        x = shape.position.dx + shape.vertices[i].dx;
+        y = shape.position.dy + shape.vertices[i].dy;
         path.lineTo(x, y);
       }
       canvas.drawPath(path, paint);

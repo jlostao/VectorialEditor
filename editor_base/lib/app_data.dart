@@ -10,6 +10,7 @@ class AppData with ChangeNotifier {
   Size docSize = const Size(500, 400);
   String toolSelected = "shape_drawing";
   Shape newShape = Shape();
+  double newShapeStrokeWidth = 1;
   List<Shape> shapesList = [];
 
   bool readyExample = false;
@@ -80,5 +81,10 @@ class AppData with ChangeNotifier {
       newShape = Shape();
       notifyListeners();
     }
+  }
+
+  void setNewShapeStrokeWidth(double value) {
+    newShapeStrokeWidth = value;
+    notifyListeners();
   }
 }

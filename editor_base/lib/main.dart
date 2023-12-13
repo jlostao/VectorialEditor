@@ -24,8 +24,9 @@ void main() async {
 
   runApp(Focus(
     onKey: (FocusNode node, RawKeyEvent event) {
-      bool isControlPressed =
-          event.isControlPressed || (Platform.isMacOS && event.isMetaPressed);
+      bool isControlPressed = (Platform.isMacOS && event.isMetaPressed) ||
+          (Platform.isLinux && event.isControlPressed) ||
+          (Platform.isWindows && event.isControlPressed);
       bool isShiftPressed = event.isShiftPressed;
       bool isZPressed = event.logicalKey == LogicalKeyboardKey.keyZ;
 

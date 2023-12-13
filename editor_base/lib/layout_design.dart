@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
 import 'package:provider/provider.dart';
 import 'app_data.dart';
@@ -46,20 +47,14 @@ class LayoutDesignState extends State<LayoutDesign> {
   }
 
   // Retorna la posició x,y al document, respecte on s'ha fet click
-  Offset _getDocPosition(
-      Offset position,
-      double zoom,
-      double sizeWidth,
-      double sizeHeight,
-      double docSizeWidth,
-      double docSizeHeight,
-      double centerX,
-      double centerY) {
+  Offset _getDocPosition(Offset position, double zoom,
+      BoxConstraints constraints, Size docSize, Offset center) {
     double scale = zoom / 100;
     double translateX =
-        (sizeWidth / (2 * scale)) - (docSizeWidth / 2) - centerX;
-    double translateY =
-        (sizeHeight / (2 * scale)) - (docSizeHeight / 2) - centerY;
+        (constraints.maxWidth / (2 * scale)) - (docSize.width / 2) - center.dx;
+    double translateY = (constraints.maxHeight / (2 * scale)) -
+        (docSize.height / 2) -
+        center.dy;
     double originalX = (position.dx / scale) - translateX;
     double originalY = (position.dy / scale) - translateY;
 
@@ -136,12 +131,9 @@ class LayoutDesignState extends State<LayoutDesign> {
                           appData.addNewShape(_getDocPosition(
                               event.localPosition,
                               appData.zoom,
-                              constraints.maxWidth,
-                              constraints.maxHeight,
-                              docSize.width,
-                              docSize.height,
-                              _scrollCenter.dx,
-                              _scrollCenter.dy));
+                              constraints,
+                              docSize,
+                              _scrollCenter));
                         }
                         setState(() {});
                       },
@@ -153,12 +145,9 @@ class LayoutDesignState extends State<LayoutDesign> {
                             appData.addRelativePointToNewShape(_getDocPosition(
                                 event.localPosition,
                                 appData.zoom,
-                                constraints.maxWidth,
-                                constraints.maxHeight,
-                                docSize.width,
-                                docSize.height,
-                                _scrollCenter.dx,
-                                _scrollCenter.dy));
+                                constraints,
+                                docSize,
+                                _scrollCenter));
                           }
                         }
                         if (_isMouseButtonPressed &&

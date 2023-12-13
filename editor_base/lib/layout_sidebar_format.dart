@@ -39,7 +39,7 @@ class LayoutSidebarFormatState extends State<LayoutSidebarFormat> {
                       alignment: Alignment.centerLeft,
                       width: 80,
                       child: CDKFieldNumeric(
-                        value: appData.newShapeStrokeWidth,
+                        value: appData.newShape.strokeWidth,
                         min: 0.01,
                         max: 100,
                         units: "px",

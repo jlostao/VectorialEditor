@@ -5,6 +5,7 @@ class Shape {
   Size scale = const Size(1, 1);
   double rotation = 0;
   List<Offset> vertices = [];
+  double strokeWidth = 1;
 
   Shape();
 
@@ -26,5 +27,9 @@ class Shape {
 
   void addRelativePoint(Offset point) {
     vertices.add(Offset(point.dx - position.dx, point.dy - position.dy));
+  }
+
+  void setStrokeWidth(double width) {
+    strokeWidth = width;
   }
 }

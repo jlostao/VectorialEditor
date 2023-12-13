@@ -207,11 +207,11 @@ class LayoutDesignPainter extends CustomPainter {
 
     // Dibuixa el poligon que s'està afegint (relatiu a la seva posició)
     if (appData.newShape.vertices.isNotEmpty) {
+      Shape shape = appData.newShape;
       Paint paint = Paint();
       paint.color = CDKTheme.black;
       paint.style = PaintingStyle.stroke;
-      paint.strokeWidth = 1;
-      Shape shape = appData.newShape;
+      paint.strokeWidth = shape.strokeWidth;
       double x = shape.position.dx + appData.newShape.vertices[0].dx;
       double y = shape.position.dy + appData.newShape.vertices[0].dy;
       Path path = Path();

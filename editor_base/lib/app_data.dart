@@ -69,7 +69,6 @@ class AppData with ChangeNotifier {
   }
 
   void addNewShape(Offset position) {
-    newShape = Shape();
     newShape.setPosition(position);
     newShape.addPoint(const Offset(0, 0));
     notifyListeners();
@@ -83,8 +82,10 @@ class AppData with ChangeNotifier {
   void addNewShapeToShapesList() {
     // Si no hi ha almenys 2 punts, no es podrà dibuixar res
     if (newShape.vertices.length >= 2) {
+      double strokeWidthConfig = newShape.strokeWidth;
       actionManager.register(ActionAddNewShape(this, newShape));
       newShape = Shape();
+      newShape.setStrokeWidth(strokeWidthConfig);
     }
   }
 

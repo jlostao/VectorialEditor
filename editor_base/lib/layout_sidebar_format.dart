@@ -3,9 +3,14 @@ import 'package:flutter_cupertino_desktop_kit/cdk.dart';
 import 'package:provider/provider.dart';
 import 'app_data.dart';
 
-class LayoutSidebarFormat extends StatelessWidget {
+class LayoutSidebarFormat extends StatefulWidget {
   const LayoutSidebarFormat({super.key});
 
+  @override
+  LayoutSidebarFormatState createState() => LayoutSidebarFormatState();
+}
+
+class LayoutSidebarFormatState extends State<LayoutSidebarFormat> {
   @override
   Widget build(BuildContext context) {
     AppData appData = Provider.of<AppData>(context);

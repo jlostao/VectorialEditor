@@ -1,3 +1,4 @@
+import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +21,6 @@ class LayoutDesignState extends State<LayoutDesign> {
   final GlobalKey<UtilCustomScrollVerticalState> _keyScrollY = GlobalKey();
   Offset _scrollCenter = const Offset(0, 0);
   bool _isMouseButtonPressed = false;
-  bool _isAltOptionKeyPressed = false;
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -101,126 +101,111 @@ class LayoutDesignState extends State<LayoutDesign> {
 
       return Stack(
         children: [
-          RawKeyboardListener(
-              focusNode: _focusNode,
-              onKey: (event) {
-                if (event is RawKeyDownEvent) {
-                  if (event.logicalKey == LogicalKeyboardKey.altLeft) {
-                    _isAltOptionKeyPressed = true;
-                  }
-                } else if (event is RawKeyUpEvent) {
-                  if (event.logicalKey == LogicalKeyboardKey.altLeft) {
-                    _isAltOptionKeyPressed = false;
+          GestureDetector(
+              onPanEnd: (details) {
+                _keyScrollX.currentState!.startInertiaAnimation();
+                _keyScrollY.currentState!.startInertiaAnimation();
+              },
+              onPanUpdate: (DragUpdateDetails details) {
+                if (!_isMouseButtonPressed) {
+                  if (appData.isAltOptionKeyPressed) {
+                    appData.setZoom(appData.zoom + details.delta.dy);
+                  } else {
+                    if (details.delta.dx != 0) {
+                      _keyScrollX.currentState!
+                          .setTrackpadDelta(details.delta.dx);
+                    }
+                    if (details.delta.dy != 0) {
+                      _keyScrollY.currentState!
+                          .setTrackpadDelta(details.delta.dy);
+                    }
                   }
                 }
               },
-              child: GestureDetector(
-                  onPanEnd: (details) {
-                    _keyScrollX.currentState!.startInertiaAnimation();
-                    _keyScrollY.currentState!.startInertiaAnimation();
-                  },
-                  onPanUpdate: (DragUpdateDetails details) {
-                    if (!_isMouseButtonPressed) {
-                      if (_isAltOptionKeyPressed) {
-                        appData.setZoom(appData.zoom + details.delta.dy);
-                      } else {
-                        if (details.delta.dx != 0) {
-                          _keyScrollX.currentState!
-                              .setTrackpadDelta(details.delta.dx);
+              child: MouseRegion(
+                  cursor: appData.toolSelected == "view_grab"
+                      ? _isMouseButtonPressed
+                          ? SystemMouseCursors.grabbing
+                          : SystemMouseCursors.grab
+                      : MouseCursor.defer, // El cursor per defecte
+                  child: Listener(
+                      onPointerDown: (event) {
+                        _focusNode.requestFocus();
+                        _isMouseButtonPressed = true;
+                        if (appData.toolSelected == "shape_drawing") {
+                          Size docSize = Size(
+                              appData.docSize.width, appData.docSize.height);
+                          appData.addNewShape(_getDocPosition(
+                              event.localPosition,
+                              appData.zoom,
+                              constraints.maxWidth,
+                              constraints.maxHeight,
+                              docSize.width,
+                              docSize.height,
+                              _scrollCenter.dx,
+                              _scrollCenter.dy));
                         }
-                        if (details.delta.dy != 0) {
-                          _keyScrollY.currentState!
-                              .setTrackpadDelta(details.delta.dy);
+                        setState(() {});
+                      },
+                      onPointerMove: (event) {
+                        if (_isMouseButtonPressed) {
+                          if (appData.toolSelected == "shape_drawing") {
+                            Size docSize = Size(
+                                appData.docSize.width, appData.docSize.height);
+                            appData.addRelativePointToNewShape(_getDocPosition(
+                                event.localPosition,
+                                appData.zoom,
+                                constraints.maxWidth,
+                                constraints.maxHeight,
+                                docSize.width,
+                                docSize.height,
+                                _scrollCenter.dx,
+                                _scrollCenter.dy));
+                          }
                         }
-                      }
-                    }
-                  },
-                  child: MouseRegion(
-                      cursor: appData.toolSelected == "view_grab"
-                          ? _isMouseButtonPressed
-                              ? SystemMouseCursors.grabbing
-                              : SystemMouseCursors.grab
-                          : MouseCursor.defer, // El cursor per defecte
-                      child: Listener(
-                          onPointerDown: (event) {
-                            _focusNode.requestFocus();
-                            _isMouseButtonPressed = true;
-                            if (appData.toolSelected == "shape_drawing") {
-                              Size docSize = Size(appData.docSize.width,
-                                  appData.docSize.height);
-                              appData.addNewShape(_getDocPosition(
-                                  event.localPosition,
-                                  appData.zoom,
-                                  constraints.maxWidth,
-                                  constraints.maxHeight,
-                                  docSize.width,
-                                  docSize.height,
-                                  _scrollCenter.dx,
-                                  _scrollCenter.dy));
+                        if (_isMouseButtonPressed &&
+                            appData.toolSelected == "view_grab") {
+                          if (event.delta.dx != 0) {
+                            _keyScrollX.currentState!
+                                .setTrackpadDelta(event.delta.dx);
+                          }
+                          if (event.delta.dy != 0) {
+                            _keyScrollY.currentState!
+                                .setTrackpadDelta(event.delta.dy);
+                          }
+                        }
+                      },
+                      onPointerUp: (event) {
+                        _isMouseButtonPressed = false;
+                        if (appData.toolSelected == "shape_drawing") {
+                          appData.addNewShapeToShapesList();
+                        }
+                        setState(() {});
+                      },
+                      onPointerSignal: (pointerSignal) {
+                        if (pointerSignal is PointerScrollEvent) {
+                          if (!_isMouseButtonPressed) {
+                            if (appData.isAltOptionKeyPressed) {
+                              appData.setZoom(
+                                  appData.zoom + pointerSignal.scrollDelta.dy);
+                            } else {
+                              _keyScrollX.currentState!
+                                  .setWheelDelta(pointerSignal.scrollDelta.dx);
+                              _keyScrollY.currentState!
+                                  .setWheelDelta(pointerSignal.scrollDelta.dy);
                             }
-                            setState(() {});
-                          },
-                          onPointerMove: (event) {
-                            if (_isMouseButtonPressed) {
-                              if (appData.toolSelected == "shape_drawing") {
-                                Size docSize = Size(appData.docSize.width,
-                                    appData.docSize.height);
-                                appData.addRelativePointToNewShape(
-                                    _getDocPosition(
-                                        event.localPosition,
-                                        appData.zoom,
-                                        constraints.maxWidth,
-                                        constraints.maxHeight,
-                                        docSize.width,
-                                        docSize.height,
-                                        _scrollCenter.dx,
-                                        _scrollCenter.dy));
-                              }
-                            }
-                            if (_isMouseButtonPressed &&
-                                appData.toolSelected == "view_grab") {
-                              if (event.delta.dx != 0) {
-                                _keyScrollX.currentState!
-                                    .setTrackpadDelta(event.delta.dx);
-                              }
-                              if (event.delta.dy != 0) {
-                                _keyScrollY.currentState!
-                                    .setTrackpadDelta(event.delta.dy);
-                              }
-                            }
-                          },
-                          onPointerUp: (event) {
-                            _isMouseButtonPressed = false;
-                            if (appData.toolSelected == "shape_drawing") {
-                              appData.addNewShapeToShapesList();
-                            }
-                            setState(() {});
-                          },
-                          onPointerSignal: (pointerSignal) {
-                            if (pointerSignal is PointerScrollEvent) {
-                              if (!_isMouseButtonPressed) {
-                                if (_isAltOptionKeyPressed) {
-                                  appData.setZoom(appData.zoom +
-                                      pointerSignal.scrollDelta.dy);
-                                } else {
-                                  _keyScrollX.currentState!.setWheelDelta(
-                                      pointerSignal.scrollDelta.dx);
-                                  _keyScrollY.currentState!.setWheelDelta(
-                                      pointerSignal.scrollDelta.dy);
-                                }
-                              }
-                            }
-                          },
-                          child: CustomPaint(
-                            painter: LayoutDesignPainter(
-                              appData: appData,
-                              theme: theme,
-                              centerX: _scrollCenter.dx,
-                              centerY: _scrollCenter.dy,
-                            ),
-                            size: Size(
-                                constraints.maxWidth, constraints.maxHeight),
-                          ))))),
+                          }
+                        }
+                      },
+                      child: CustomPaint(
+                        painter: LayoutDesignPainter(
+                          appData: appData,
+                          theme: theme,
+                          centerX: _scrollCenter.dx,
+                          centerY: _scrollCenter.dy,
+                        ),
+                        size: Size(constraints.maxWidth, constraints.maxHeight),
+                      )))),
           UtilCustomScrollHorizontal(
             key: _keyScrollX,
             size: constraints.maxWidth,

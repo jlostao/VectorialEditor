@@ -65,5 +65,5 @@ void showWindow(_) async {
   const size = Size(800.0, 600.0);
   windowManager.setSize(size);
   windowManager.setMinimumSize(size);
-  await windowManager.setTitle('Example App');
+  await windowManager.setTitle('Vector Editor');
 }

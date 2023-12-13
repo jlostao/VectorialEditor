@@ -187,11 +187,11 @@ class LayoutDesignPainter extends CustomPainter {
     // Dibuixa la llista de poligons (segons correspon, relatiu a la seva posició)
     if (appData.shapesList.isNotEmpty) {
       for (int i = 0; i < appData.shapesList.length; i++) {
+        Shape shape = appData.shapesList[i];
         Paint paint = Paint();
         paint.color = CDKTheme.black;
         paint.style = PaintingStyle.stroke;
         paint.strokeWidth = 1;
-        Shape shape = appData.shapesList[i];
         double x = shape.position.dx + shape.vertices[0].dx;
         double y = shape.position.dy + shape.vertices[0].dy;
         Path path = Path();

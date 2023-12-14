@@ -94,7 +94,6 @@ class AppClickSelector {
         // int blue = byteData.getUint8(pixelIndex + 2);
         int alpha = byteData.getUint8(pixelIndex + 3);
 
-        // No detecta els polígons completament transparents
         return alpha != 0;
       }
     }
@@ -119,10 +118,16 @@ class AppClickSelector {
         (scaledSize.height / 2) - (appData.docSize.height / 2) - center.dy;
     canvas.translate(translateX, translateY);
 
+    // Per un si cas és transparent, forçe el color negre
+    Color tmpStroke = shape.strokeColor;
+    shape.strokeColor = Colors.black;
+
     // Dibuixa el poligon que s'està afegint
     LayoutDesignPainter.paintShape(canvas, shape);
 
-    // Restaura l'estat previ a l'escalat i translació
+    shape.strokeColor = tmpStroke;
+
+    // Restaura l'estat previ
     canvas.restore();
   }
 }

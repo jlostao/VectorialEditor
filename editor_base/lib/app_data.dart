@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'app_click_selector.dart';
 import 'app_data_actions.dart';
 import 'util_shape.dart';
 
@@ -14,6 +15,7 @@ class AppData with ChangeNotifier {
   String toolSelected = "shape_drawing";
   Shape newShape = Shape();
   List<Shape> shapesList = [];
+  int shapeSelected = -1;
 
   bool readyExample = false;
   late dynamic dataExample;
@@ -66,6 +68,17 @@ class AppData with ChangeNotifier {
   void setToolSelected(String name) {
     toolSelected = name;
     notifyListeners();
+  }
+
+  void setShapeSelected(int index) {
+    shapeSelected = index;
+    notifyListeners();
+  }
+
+  void selectShapeAtPosition(Offset docPosition, Offset localPosition,
+      BoxConstraints constraints, Offset center) async {
+    setShapeSelected(await AppClickSelector.selectShapeAtPosition(
+        this, docPosition, localPosition, constraints, center));
   }
 
   void addNewShape(Offset position) {

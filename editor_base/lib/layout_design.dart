@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_cupertino_desktop_kit/cdk.dart';
 import 'package:provider/provider.dart';
 import 'app_data.dart';
@@ -92,6 +91,20 @@ class LayoutDesignState extends State<LayoutDesign> {
 
       _scrollCenter = Offset(tmpScrollX, tmpScrollY);
 
+      // Choose cursor
+      MouseCursor cursorShown = MouseCursor.defer;
+      if (appData.toolSelected == "pointer_shapes") {
+        cursorShown = SystemMouseCursors.basic;
+      } else if (appData.toolSelected == "view_grab") {
+        if (_isMouseButtonPressed) {
+          cursorShown = SystemMouseCursors.grabbing;
+        } else {
+          cursorShown = SystemMouseCursors.grab;
+        }
+      } else if (appData.toolSelected == "shape_drawing") {
+        cursorShown = SystemMouseCursors.precise;
+      }
+
       return Stack(
         children: [
           GestureDetector(
@@ -116,24 +129,25 @@ class LayoutDesignState extends State<LayoutDesign> {
                 }
               },
               child: MouseRegion(
-                  cursor: appData.toolSelected == "view_grab"
-                      ? _isMouseButtonPressed
-                          ? SystemMouseCursors.grabbing
-                          : SystemMouseCursors.grab
-                      : MouseCursor.defer, // El cursor per defecte
+                  cursor: cursorShown,
                   child: Listener(
                       onPointerDown: (event) {
                         _focusNode.requestFocus();
                         _isMouseButtonPressed = true;
+                        Size docSize =
+                            Size(appData.docSize.width, appData.docSize.height);
+                        Offset docPosition = _getDocPosition(
+                            event.localPosition,
+                            appData.zoom,
+                            constraints,
+                            docSize,
+                            _scrollCenter);
+                        if (appData.toolSelected == "pointer_shapes") {
+                          appData.selectShapeAtPosition(docPosition,
+                              event.localPosition, constraints, _scrollCenter);
+                        }
                         if (appData.toolSelected == "shape_drawing") {
-                          Size docSize = Size(
-                              appData.docSize.width, appData.docSize.height);
-                          appData.addNewShape(_getDocPosition(
-                              event.localPosition,
-                              appData.zoom,
-                              constraints,
-                              docSize,
-                              _scrollCenter));
+                          appData.addNewShape(docPosition);
                         }
                         setState(() {});
                       },

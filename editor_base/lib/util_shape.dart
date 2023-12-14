@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 
 class Shape {
   Offset position = const Offset(0, 0);
-  Size scale = const Size(1, 1);
-  double rotation = 0;
   List<Offset> vertices = [];
   double strokeWidth = 1;
 
@@ -11,14 +9,6 @@ class Shape {
 
   void setPosition(Offset newPosition) {
     position = newPosition;
-  }
-
-  void setScale(Size newScale) {
-    scale = newScale;
-  }
-
-  void setRotation(double newRotation) {
-    rotation = newRotation;
   }
 
   void addPoint(Offset point) {

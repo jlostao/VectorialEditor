@@ -16,6 +16,7 @@ class AppData with ChangeNotifier {
   Shape newShape = Shape();
   List<Shape> shapesList = [];
   int shapeSelected = -1;
+  int shapeSelectedPrevious = -1;
 
   bool readyExample = false;
   late dynamic dataExample;
@@ -77,6 +78,7 @@ class AppData with ChangeNotifier {
 
   void selectShapeAtPosition(Offset docPosition, Offset localPosition,
       BoxConstraints constraints, Offset center) async {
+    shapeSelectedPrevious = shapeSelected;
     shapeSelected = -1;
     setShapeSelected(await AppClickSelector.selectShapeAtPosition(
         this, docPosition, localPosition, constraints, center));

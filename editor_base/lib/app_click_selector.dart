@@ -12,6 +12,9 @@ class AppClickSelector {
     for (var i = appData.shapesList.length - 1; i >= 0; i--) {
       Shape shape = appData.shapesList[i];
       if (_isPointInsideBoundingBox(docPosition, shape)) {
+        if (i == appData.shapeSelectedPrevious) {
+          return i;
+        }
         if (await _isClickOnShape(
             appData, localPosition, shape, constraints, center)) {
           return i;

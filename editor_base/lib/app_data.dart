@@ -76,7 +76,7 @@ class AppData with ChangeNotifier {
     notifyListeners();
   }
 
-  void selectShapeAtPosition(Offset docPosition, Offset localPosition,
+  Future<void> selectShapeAtPosition(Offset docPosition, Offset localPosition,
       BoxConstraints constraints, Offset center) async {
     shapeSelectedPrevious = shapeSelected;
     shapeSelected = -1;

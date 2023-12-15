@@ -131,7 +131,7 @@ class LayoutDesignState extends State<LayoutDesign> {
               child: MouseRegion(
                   cursor: cursorShown,
                   child: Listener(
-                      onPointerDown: (event) {
+                      onPointerDown: (event) async {
                         _focusNode.requestFocus();
                         _isMouseButtonPressed = true;
                         Size docSize =
@@ -143,7 +143,7 @@ class LayoutDesignState extends State<LayoutDesign> {
                             docSize,
                             _scrollCenter);
                         if (appData.toolSelected == "pointer_shapes") {
-                          appData.selectShapeAtPosition(docPosition,
+                          await appData.selectShapeAtPosition(docPosition,
                               event.localPosition, constraints, _scrollCenter);
                         }
                         if (appData.toolSelected == "shape_drawing") {

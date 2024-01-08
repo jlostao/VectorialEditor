@@ -11,9 +11,57 @@ class LayoutSidebarFormat extends StatefulWidget {
 }
 
 class LayoutSidebarFormatState extends State<LayoutSidebarFormat> {
+  late Widget _preloadedColorPicker;
+  final GlobalKey<CDKDialogPopoverState> _anchorColorButton = GlobalKey();
+  final ValueNotifier<Color> _valueColorNotifier =
+      ValueNotifier(const Color(0x800080FF));
+  Color selectedColor = const Color(0x800080FF);
+
+  _showPopoverColor(
+      BuildContext context, GlobalKey anchorKey, AppData appData) {
+    final GlobalKey<CDKDialogPopoverArrowedState> key = GlobalKey();
+    if (anchorKey.currentContext == null) {
+      // ignore: avoid_print
+      print("Error: anchorKey not assigned to a widget");
+      return;
+    }
+    CDKDialogsManager.showPopoverArrowed(
+      key: key,
+      context: context,
+      anchorKey: anchorKey,
+      isAnimated: true,
+      isTranslucent: false,
+      onHide: () {
+        appData.setNewShapeStrokeColor(selectedColor);
+      },
+      child: _preloadedColorPicker,
+    );
+  }
+
+  Widget _buildPreloadedColorPicker(AppData appData) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ValueListenableBuilder<Color>(
+        valueListenable: _valueColorNotifier,
+        builder: (context, value, child) {
+          return CDKPickerColor(
+            color: _valueColorNotifier.value,
+            onChanged: (color) {
+              setState(() {
+                _valueColorNotifier.value = color;
+                selectedColor = color;
+              });
+            },
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     AppData appData = Provider.of<AppData>(context);
+    _preloadedColorPicker = _buildPreloadedColorPicker(appData);
 
     TextStyle fontBold =
         const TextStyle(fontSize: 12, fontWeight: FontWeight.bold);
@@ -59,6 +107,16 @@ class LayoutSidebarFormatState extends State<LayoutSidebarFormat> {
                         width: labelsWidth,
                         child: Text("Stroke color:", style: font)),
                     const SizedBox(width: 4),
+                    Container(
+                        alignment: Alignment.centerLeft,
+                        width: 80,
+                        child: CDKButtonColor(
+                            key: _anchorColorButton,
+                            color: _valueColorNotifier.value,
+                            onPressed: () {
+                              _showPopoverColor(
+                                  context, _anchorColorButton, appData);
+                            })),
                   ],
                 ),
                 const SizedBox(height: 16),

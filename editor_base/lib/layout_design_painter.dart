@@ -8,6 +8,7 @@ import 'util_shape.dart';
 class LayoutDesignPainter extends CustomPainter {
   final AppData appData;
   final CDKTheme theme;
+  static Color colorGrid = CDKTheme.white;
   final double centerX;
   final double centerY;
   static bool _shadersReady = false;
@@ -36,7 +37,7 @@ class LayoutDesignPainter extends CustomPainter {
     // White and grey grid
     ui.PictureRecorder recorder = ui.PictureRecorder();
     Canvas imageCanvas = Canvas(recorder);
-    final paint = Paint()..color = CDKTheme.white;
+    final paint = Paint()..color = colorGrid;
     imageCanvas.drawRect(const Rect.fromLTWH(0, 0, size, size), paint);
     imageCanvas.drawRect(const Rect.fromLTWH(size, size, size, size), paint);
     paint.color = CDKTheme.grey100;
@@ -149,7 +150,7 @@ class LayoutDesignPainter extends CustomPainter {
   static void paintShape(Canvas canvas, Shape shape) {
     if (shape.vertices.isNotEmpty) {
       Paint paint = Paint();
-      paint.color = CDKTheme.black;
+      paint.color = shape.strokeColor;
       paint.style = PaintingStyle.stroke;
       paint.strokeWidth = shape.strokeWidth;
       double x = shape.position.dx + shape.vertices[0].dx;
@@ -204,6 +205,8 @@ class LayoutDesignPainter extends CustomPainter {
     }
 
     // Dibuixa el fons del document aquí ...
+    Paint paint = Paint()..color = appData.docColor;
+    canvas.drawRect(Rect.fromLTWH(0, 0, docW, docH), paint);
 
     // Dibuixa la llista de poligons (segons correspon, relatiu a la seva posició)
     if (appData.shapesList.isNotEmpty) {

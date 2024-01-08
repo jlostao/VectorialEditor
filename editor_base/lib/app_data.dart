@@ -12,8 +12,10 @@ class AppData with ChangeNotifier {
   bool isAltOptionKeyPressed = false;
   double zoom = 95;
   Size docSize = const Size(500, 400);
+  Color docColor = const Color.fromARGB(0, 255, 255, 255);
   String toolSelected = "shape_drawing";
   Shape newShape = Shape();
+  Color strokeColor = Colors.black;
   List<Shape> shapesList = [];
   int shapeSelected = -1;
   int shapeSelectedPrevious = -1;
@@ -66,6 +68,19 @@ class AppData with ChangeNotifier {
     actionManager.register(ActionSetDocHeight(this, previousHeight, value));
   }
 
+  Color getDocColor() {
+    return docColor;
+  }
+
+  void setDocColor(Color color) {
+    docColor = color;
+  }
+
+  void changeDocColor(Color color) {
+    Color previousColor = docColor;
+    actionManager.register(ActionSetDocColor(this, previousColor, color));
+  }
+
   void setToolSelected(String name) {
     toolSelected = name;
     notifyListeners();
@@ -74,6 +89,15 @@ class AppData with ChangeNotifier {
   void setShapeSelected(int index) {
     shapeSelected = index;
     notifyListeners();
+  }
+
+  void setStrokeColor(Color color) {
+    strokeColor = color;
+  }
+
+  void changeStrokeColor(Color color) {
+    Color previousColor = strokeColor;
+    actionManager.register(ActionSetStrokeColor(this, previousColor, color));
   }
 
   Future<void> selectShapeAtPosition(Offset docPosition, Offset localPosition,
@@ -99,14 +123,22 @@ class AppData with ChangeNotifier {
     // Si no hi ha almenys 2 punts, no es podrà dibuixar res
     if (newShape.vertices.length >= 2) {
       double strokeWidthConfig = newShape.strokeWidth;
+      Color strokeColorConfig = strokeColor;
       actionManager.register(ActionAddNewShape(this, newShape));
       newShape = Shape();
       newShape.setStrokeWidth(strokeWidthConfig);
+      newShape.setStrokeColor(strokeColorConfig);
     }
   }
 
   void setNewShapeStrokeWidth(double value) {
     newShape.setStrokeWidth(value);
+    notifyListeners();
+  }
+
+  void setNewShapeStrokeColor(Color color) {
+    setStrokeColor(color);
+    newShape.setStrokeColor(color);
     notifyListeners();
   }
 }

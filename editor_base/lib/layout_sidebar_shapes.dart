@@ -35,10 +35,7 @@ class LayoutSidebarShapes extends StatelessWidget {
 class ShapeListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Acceder al AppData global
     AppData appData = Provider.of<AppData>(context);
-
-    // Obtener la lista de formas
     List<Shape> shapesList = appData.shapesList;
     CDKTheme theme = CDKThemeNotifier.of(context)!.changeNotifier;
 
@@ -49,21 +46,25 @@ class ShapeListWidget extends StatelessWidget {
         itemBuilder: (context, index) {
           final isSelected = appData.shapeSelected == index;
 
-          // Crear una instancia de LayoutDesignPainter para cada forma
-          LayoutDesignPainter layoutPainter = LayoutDesignPainter(
-            appData: appData,
-            theme: CDKTheme(), // Asegúrate de tener un tema válido aquí
+          // Obtener la forma actual
+          Shape currentShape = shapesList[index];
+
+          // Crear una instancia de CustomShapePainter con el tamaño más pequeño
+          CustomShapePainter shapePainter = CustomShapePainter(
+            shape: currentShape,
+            theme: theme,
             centerX: 0,
             centerY: 0,
           );
 
+          // Definir un tamaño pequeño para el CustomPaint
+          Size shapeSize = Size(20, 20);
+
           return CupertinoButton(
             onPressed: () {
               if (isSelected) {
-                // Si ya está seleccionado, deseleccionar
                 appData.setShapeSelected(-1);
               } else {
-                // Si no está seleccionado, seleccionar
                 appData.setShapeSelected(index);
               }
             },
@@ -78,22 +79,19 @@ class ShapeListWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      // Mostrar el nombre de la forma
                       Text(
                         'Shape ${index + 1}',
                         style: TextStyle(
-                            fontSize: 16,
-                            color: isSelected ? CupertinoColors.white : null),
-                      ),
-                      // Sustituir el segundo Text con LayoutDesignPainter
-                      CustomPaint(
-                        painter: CustomShapePainter(
-                          shape: appData.shapesList[index],
-                          theme: theme,
-                          centerX: 0,
-                          centerY: 0,
+                          fontSize: 16,
+                          color: isSelected ? CupertinoColors.white : null,
                         ),
-                        size: Size(
-                            10, 10), // Ajusta el tamaño según sea necesario
+                      ),
+                      SizedBox(width: 8), // Espacio entre el texto y la forma
+                      // Utilizar el tamaño pequeño de la forma en CustomPaint
+                      CustomPaint(
+                        painter: shapePainter,
+                        size: shapeSize,
                       ),
                     ],
                   ),
